@@ -1,0 +1,583 @@
+[
+  {
+    "id": "apt-001",
+    "district": "Dubai Marina",
+    "area": 85,
+    "floor": 12,
+    "price": 2800000,
+    "description": "Современная квартира с панорамным видом на марину и Персидский залив. Просторная гостиная с французскими окнами, две спальни, дизайнерская отделка в светлых тонах. В комплексе: бассейн на крыше, фитнес-центр, консьерж 24/7.",
+    "images": [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800"
+    ]
+  },
+  {
+    "id": "apt-002",
+    "district": "Downtown Dubai",
+    "area": 120,
+    "floor": 45,
+    "price": 5500000,
+    "description": "Эксклюзивная квартира в небоскрёбе рядом с Burj Khalifa. Три спальни, гостиная с двойной высотой потолков, приватный балкон с видом на фонтаны Dubai Fountain. Премиальная отделка мрамором, умный дом.",
+    "images": [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800",
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800"
+    ]
+  },
+  {
+    "id": "apt-003",
+    "district": "Palm Jumeirah",
+    "area": 200,
+    "floor": 8,
+    "price": 12000000,
+    "description": "Роскошный пентхаус на знаменитом острове Palm Jumeirah. Четыре спальни, приватный бассейн на террасе, прямой выход к пляжу. Полностью меблирована дизайнерской мебелью, винный погреб, комната для прислуги.",
+    "images": [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+      "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800"
+    ]
+  },
+  {
+    "id": "apt-004",
+    "district": "JBR",
+    "area": 65,
+    "floor": 5,
+    "price": 1800000,
+    "description": "Уютная квартира в пешей доступности от пляжа Jumeirah Beach Residence. Одна спальня, современный ремонт, балкон с видом на море. Идеально для инвестиций или молодой семьи. Развитая инфраструктура района.",
+    "images": [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
+      "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800",
+      "https://images.unsplash.com/photo-1630699144867-37acec97df5a?w=800"
+    ]
+  },
+  {
+    "id": "apt-005",
+    "district": "Business Bay",
+    "area": 95,
+    "floor": 22,
+    "price": 2200000,
+    "description": "Стильный лофт в деловом центре Дубая. Две спальни, открытая планировка, потолки 4 метра. Вид на канал Dubai Water Canal. В шаговой доступности метро, рестораны и офисы. Отличная инвестиция с высокой арендной доходностью.",
+    "images": [
+      "https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=800"
+    ]
+  },
+  {
+    "id": "apt-006",
+    "district": "Dubai Hills",
+    "area": 140,
+    "floor": 3,
+    "price": 3200000,
+    "description": "Семейная квартира в зелёном районе Dubai Hills Estate. Три спальни, большая терраса с видом на гольф-поле, детская игровая. Экологичный район с парками, школами и торговым центром Dubai Hills Mall.",
+    "images": [
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800",
+      "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800",
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800"
+    ]
+  },
+  {
+    "id": "apt-007",
+    "district": "Creek Harbour",
+    "area": 110,
+    "floor": 35,
+    "price": 4100000,
+    "description": "Новая квартира в Dubai Creek Harbour с видом на будущую башню Dubai Creek Tower. Две спальни плюс кабинет, панорамное остекление, премиальная кухня Miele. Район с набережной, парками и яхт-клубом.",
+    "images": [
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800",
+      "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800",
+      "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800"
+    ]
+  },
+  {
+    "id": "apt-008",
+    "district": "Dubai Marina",
+    "area": 55,
+    "floor": 18,
+    "price": 1500000,
+    "description": "Компактная студия в сердце Dubai Marina. Смарт-планировка, встроенная мебель, балкон. Бассейн и спортзал в комплексе. Высокий арендный доход, идеально для старта инвестиционного портфеля.",
+    "images": [
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800",
+      "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800",
+      "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=800"
+    ]
+  },
+  {
+    "id": "apt-009",
+    "district": "Jumeirah Village Circle",
+    "area": 75,
+    "floor": 7,
+    "price": 950000,
+    "description": "Доступная квартира в развивающемся районе JVC. Две спальни, современный ремонт, парковка. Тихий семейный район с супермаркетами, кафе и парками. Отличное соотношение цены и качества.",
+    "images": [
+      "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800",
+      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800",
+      "https://images.unsplash.com/photo-1600566752734-2a0cd66e58b4?w=800"
+    ]
+  },
+  {
+    "id": "apt-010",
+    "district": "DIFC",
+    "area": 180,
+    "floor": 50,
+    "price": 8500000,
+    "description": "Престижная резиденция в финансовом центре DIFC. Четыре спальни, домашний кинотеатр, две парковки. Вид на весь Дубай с высоты 200 метров. Консьерж-сервис, приватный лифт, охрана 24/7. Для требовательных клиентов.",
+    "images": [
+      "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800",
+      "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800",
+      "https://images.unsplash.com/photo-1600210491369-e753d80a41f3?w=800"
+    ]
+  },
+  {
+    "id": "apt-011",
+    "district": "JBR",
+    "area": 72,
+    "floor": 11,
+    "price": 1950000,
+    "description": "Светлая квартира с видом на пляж. Одна спальня плюс гардеробная, балкон. Пешая доступность к The Walk JBR с магазинами и ресторанами.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-012",
+    "district": "Dubai Marina",
+    "area": 92,
+    "floor": 25,
+    "price": 2400000,
+    "description": "Две спальни с видом на яхты. Современная кухня, гостиная с панорамными окнами. Бассейн на крыше, спортзал, детская площадка в комплексе.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-013",
+    "district": "Downtown Dubai",
+    "area": 105,
+    "floor": 38,
+    "price": 4800000,
+    "description": "Квартира с видом на Burj Khalifa. Две спальни, кабинет, дизайнерский ремонт. Рядом Dubai Mall и станция метро.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  },
+  {
+    "id": "apt-014",
+    "district": "Business Bay",
+    "area": 68,
+    "floor": 14,
+    "price": 1650000,
+    "description": "Студия для молодого профессионала. Вид на канал, встроенная кухня. Метро и офисы в пешей доступности.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-015",
+    "district": "Palm Jumeirah",
+    "area": 165,
+    "floor": 6,
+    "price": 9800000,
+    "description": "Трёхкомнатная квартира на Palm Jumeirah. Прямой выход к пляжу, терраса с джакузи. Закрытый комплекс с охраной.",
+    "images": ["https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800", "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800"]
+  },
+  {
+    "id": "apt-016",
+    "district": "Dubai Hills",
+    "area": 88,
+    "floor": 9,
+    "price": 2100000,
+    "description": "Две спальни в семейном районе. Вид на гольф-поле, парковка. Школы и детские сады рядом.",
+    "images": ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800"]
+  },
+  {
+    "id": "apt-017",
+    "district": "JVC",
+    "area": 62,
+    "floor": 4,
+    "price": 850000,
+    "description": "Доступная однушка в JVC. Свежий ремонт, балкон. Тихий район, супермаркеты и кафе в комплексе.",
+    "images": ["https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800", "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800"]
+  },
+  {
+    "id": "apt-018",
+    "district": "Creek Harbour",
+    "area": 130,
+    "floor": 28,
+    "price": 4500000,
+    "description": "Трёхспальная с видом на Creek. Кухня с островом, гардеробные. Набережная и парки у дома.",
+    "images": ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800", "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800"]
+  },
+  {
+    "id": "apt-019",
+    "district": "DIFC",
+    "area": 95,
+    "floor": 42,
+    "price": 5200000,
+    "description": "Две спальни в финансовом центре. Умный дом, встроенная техника Gaggenau. Консьерж и охрана.",
+    "images": ["https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800"]
+  },
+  {
+    "id": "apt-020",
+    "district": "JBR",
+    "area": 58,
+    "floor": 8,
+    "price": 1700000,
+    "description": "Студия у пляжа. Балкон с видом на море, встроенная мебель. Идеально для сдачи в аренду.",
+    "images": ["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800", "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800"]
+  },
+  {
+    "id": "apt-021",
+    "district": "Dubai Marina",
+    "area": 115,
+    "floor": 32,
+    "price": 3100000,
+    "description": "Три спальни с видом на Marina. Просторная гостиная, две ванные. Бассейн инфинити на крыше.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-022",
+    "district": "Downtown Dubai",
+    "area": 78,
+    "floor": 29,
+    "price": 3400000,
+    "description": "Однушка с видом на фонтаны. Дизайнерская отделка, умный дом. Рядом Souk Al Bahar.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-023",
+    "district": "Business Bay",
+    "area": 102,
+    "floor": 19,
+    "price": 2650000,
+    "description": "Две спальни с кабинетом. Вид на канал и Downtown. Парковка на два авто.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-024",
+    "district": "Palm Jumeirah",
+    "area": 220,
+    "floor": 10,
+    "price": 15000000,
+    "description": "Пентхаус с приватным бассейном. Четыре спальни, панорамные окна. Персональный пляж, причал для яхты.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  },
+  {
+    "id": "apt-025",
+    "district": "Dubai Hills",
+    "area": 125,
+    "floor": 5,
+    "price": 2900000,
+    "description": "Три спальни в зелёном районе. Большая терраса, вид на парк. Школа Emirates International School рядом.",
+    "images": ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800"]
+  },
+  {
+    "id": "apt-026",
+    "district": "JVC",
+    "area": 82,
+    "floor": 12,
+    "price": 1050000,
+    "description": "Две спальни с балконом. Современная кухня, гардеробные. Детская площадка и бассейн в комплексе.",
+    "images": ["https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800", "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800"]
+  },
+  {
+    "id": "apt-027",
+    "district": "Creek Harbour",
+    "area": 96,
+    "floor": 22,
+    "price": 3200000,
+    "description": "Две спальни в новом районе. Вид на будущую башню Creek Tower. Кухня Siemens, умный дом.",
+    "images": ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800", "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800"]
+  },
+  {
+    "id": "apt-028",
+    "district": "DIFC",
+    "area": 145,
+    "floor": 55,
+    "price": 7800000,
+    "description": "Трёхспальная на высоком этаже. Винный шкаф, домашний кинотеатр. Вид на Sheikh Zayed Road.",
+    "images": ["https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800"]
+  },
+  {
+    "id": "apt-029",
+    "district": "JBR",
+    "area": 85,
+    "floor": 15,
+    "price": 2300000,
+    "description": "Две спальни у The Beach. Вид на море и Ain Dubai. Фитнес-клуб и спа в башне.",
+    "images": ["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800", "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800"]
+  },
+  {
+    "id": "apt-030",
+    "district": "Dubai Marina",
+    "area": 48,
+    "floor": 6,
+    "price": 1250000,
+    "description": "Компактная студия для инвестиций. Меблирована, готова к сдаче. Высокая арендная доходность.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-031",
+    "district": "Downtown Dubai",
+    "area": 135,
+    "floor": 52,
+    "price": 6500000,
+    "description": "Три спальни с панорамным видом. Мраморные полы, кухня Poggenpohl. Приватный лифт на этаж.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-032",
+    "district": "Business Bay",
+    "area": 74,
+    "floor": 27,
+    "price": 1850000,
+    "description": "Одна спальня с кабинетом. Вид на воду, балкон. Метро Business Bay в 5 минутах.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-033",
+    "district": "Palm Jumeirah",
+    "area": 190,
+    "floor": 12,
+    "price": 11500000,
+    "description": "Четырёхкомнатная на Палм. Терраса с летней кухней, джакузи. Услуги five-star отеля Atlantis.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  },
+  {
+    "id": "apt-034",
+    "district": "Dubai Hills",
+    "area": 98,
+    "floor": 7,
+    "price": 2350000,
+    "description": "Две спальни с видом на гольф. Современная планировка, две парковки. Dubai Hills Mall в 10 минутах.",
+    "images": ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800"]
+  },
+  {
+    "id": "apt-035",
+    "district": "JVC",
+    "area": 55,
+    "floor": 2,
+    "price": 780000,
+    "description": "Студия на первом этаже. Выход в сад, парковка у дверей. Отличная цена для первого жилья.",
+    "images": ["https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800", "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800"]
+  },
+  {
+    "id": "apt-036",
+    "district": "Creek Harbour",
+    "area": 118,
+    "floor": 31,
+    "price": 3900000,
+    "description": "Две спальни с гостевой комнатой. Вид на Creek и Downtown. Набережная с ресторанами у дома.",
+    "images": ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800", "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800"]
+  },
+  {
+    "id": "apt-037",
+    "district": "DIFC",
+    "area": 88,
+    "floor": 36,
+    "price": 4600000,
+    "description": "Однушка премиум-класса. Техника Miele, паркет, потолки 3.2м. Консьерж, камердинер, valet parking.",
+    "images": ["https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800"]
+  },
+  {
+    "id": "apt-038",
+    "district": "JBR",
+    "area": 67,
+    "floor": 19,
+    "price": 1880000,
+    "description": "Одна спальня с видом на пляж. Балкон, встроенные шкафы. The Walk и пляжные клубы в шаговой доступности.",
+    "images": ["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800", "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800"]
+  },
+  {
+    "id": "apt-039",
+    "district": "Dubai Marina",
+    "area": 128,
+    "floor": 40,
+    "price": 3600000,
+    "description": "Три спальни на высоком этаже. Панорамный вид 270°. Кухня с островом, master bedroom с гардеробной.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-040",
+    "district": "Downtown Dubai",
+    "area": 92,
+    "floor": 41,
+    "price": 4200000,
+    "description": "Две спальни с кабинетом. Вид на Opera House и фонтаны. Дизайнерская мебель в комплекте.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-041",
+    "district": "Business Bay",
+    "area": 86,
+    "floor": 16,
+    "price": 2100000,
+    "description": "Две спальни с балконом. Вид на канал, современная кухня. Бассейн и барбекю-зона на крыше.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-042",
+    "district": "Palm Jumeirah",
+    "area": 175,
+    "floor": 7,
+    "price": 10200000,
+    "description": "Трёхспальная вилла-квартира. Приватный сад, барбекю, прямой доступ к пляжу. Охраняемый комплекс.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  },
+  {
+    "id": "apt-043",
+    "district": "Dubai Hills",
+    "area": 112,
+    "floor": 11,
+    "price": 2650000,
+    "description": "Две спальни с мейд-румом. Балкон с видом на зелень. Детские сады и школы в районе.",
+    "images": ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800"]
+  },
+  {
+    "id": "apt-044",
+    "district": "JVC",
+    "area": 70,
+    "floor": 8,
+    "price": 920000,
+    "description": "Одна спальня в тихом комплексе. Парковка, кладовка. Супермаркет Carrefour и Circle Mall рядом.",
+    "images": ["https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800", "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800"]
+  },
+  {
+    "id": "apt-045",
+    "district": "Creek Harbour",
+    "area": 140,
+    "floor": 26,
+    "price": 4800000,
+    "description": "Три спальни с гостевой. Кухня Bosch, умный дом, две парковки. Яхт-клуб и набережная у дома.",
+    "images": ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800", "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800"]
+  },
+  {
+    "id": "apt-046",
+    "district": "DIFC",
+    "area": 165,
+    "floor": 48,
+    "price": 9200000,
+    "description": "Четыре спальни в Gate Avenue. Винная комната, кинотеатр, сауна. Консьерж 24/7, valet parking.",
+    "images": ["https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800"]
+  },
+  {
+    "id": "apt-047",
+    "district": "JBR",
+    "area": 76,
+    "floor": 13,
+    "price": 2050000,
+    "description": "Одна спальня плюс кабинет. Вид на море, балкон. Пляж Jumeirah Beach в 2 минутах пешком.",
+    "images": ["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800", "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800"]
+  },
+  {
+    "id": "apt-048",
+    "district": "Dubai Marina",
+    "area": 105,
+    "floor": 28,
+    "price": 2850000,
+    "description": "Две спальни с гардеробными. Вид на яхты, балкон-терраса. Инфинити-бассейн и спа в комплексе.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-049",
+    "district": "Downtown Dubai",
+    "area": 118,
+    "floor": 35,
+    "price": 5100000,
+    "description": "Две спальни с кабинетом и мейд-румом. Вид на Burj Khalifa. Техника Gaggenau, мрамор Calacatta.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-050",
+    "district": "Business Bay",
+    "area": 78,
+    "floor": 21,
+    "price": 1920000,
+    "description": "Одна спальня с балконом. Вид на канал и Downtown. Метро и рестораны в пешей доступности.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-051",
+    "district": "Palm Jumeirah",
+    "area": 210,
+    "floor": 9,
+    "price": 13800000,
+    "description": "Пентхаус с приватным лифтом. Пять спален, терраса 150 кв.м. Бассейн с подогревом, сауна, спортзал.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  },
+  {
+    "id": "apt-052",
+    "district": "Dubai Hills",
+    "area": 135,
+    "floor": 6,
+    "price": 3100000,
+    "description": "Три спальни в Dubai Hills Estate. Терраса с видом на гольф-поле. Школа GEMS и парк у дома.",
+    "images": ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800"]
+  },
+  {
+    "id": "apt-053",
+    "district": "JVC",
+    "area": 88,
+    "floor": 10,
+    "price": 1100000,
+    "description": "Две спальни с балконом. Парковка, кладовая. Бассейн, спортзал и детская площадка в комплексе.",
+    "images": ["https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800", "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=800"]
+  },
+  {
+    "id": "apt-054",
+    "district": "Creek Harbour",
+    "area": 102,
+    "floor": 24,
+    "price": 3500000,
+    "description": "Две спальни с кабинетом. Вид на Creek Tower. Кухня Siemens, умный дом, две парковки.",
+    "images": ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800", "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=800"]
+  },
+  {
+    "id": "apt-055",
+    "district": "DIFC",
+    "area": 125,
+    "floor": 44,
+    "price": 6800000,
+    "description": "Три спальни в ICD Brookfield. Панорамные окна, кухня Boffi. Консьерж, охрана, камердинер.",
+    "images": ["https://images.unsplash.com/photo-1600047509358-9dc75507daeb?w=800", "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800"]
+  },
+  {
+    "id": "apt-056",
+    "district": "JBR",
+    "area": 82,
+    "floor": 17,
+    "price": 2200000,
+    "description": "Две спальни с видом на Ain Dubai. Балкон, встроенная мебель. The Beach и пляж в 3 минутах.",
+    "images": ["https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800", "https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=800"]
+  },
+  {
+    "id": "apt-057",
+    "district": "Dubai Marina",
+    "area": 52,
+    "floor": 9,
+    "price": 1380000,
+    "description": "Уютная студия с балконом. Меблирована, готова к заезду. Высокий арендный потенциал.",
+    "images": ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800", "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"]
+  },
+  {
+    "id": "apt-058",
+    "district": "Downtown Dubai",
+    "area": 145,
+    "floor": 48,
+    "price": 7200000,
+    "description": "Три спальни с мейд-румом. Вид на фонтаны и Burj Khalifa. Паркет, мрамор, техника Miele.",
+    "images": ["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"]
+  },
+  {
+    "id": "apt-059",
+    "district": "Business Bay",
+    "area": 92,
+    "floor": 23,
+    "price": 2350000,
+    "description": "Две спальни с гостевой комнатой. Вид на канал и Downtown. Две парковки, кладовая.",
+    "images": ["https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=800", "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"]
+  },
+  {
+    "id": "apt-060",
+    "district": "Palm Jumeirah",
+    "area": 195,
+    "floor": 11,
+    "price": 12500000,
+    "description": "Четыре спальни на Палм Джумейра. Терраса с летней кухней, джакузи. Приватный пляж и причал.",
+    "images": ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"]
+  }
+]
+
