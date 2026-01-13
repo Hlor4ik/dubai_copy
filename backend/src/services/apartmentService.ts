@@ -1,5 +1,5 @@
 import { Apartment, SearchParams } from '../types/index.js';
-import apartments from '../data/apartments.json' assert { type: 'json' };
+import apartments from '../data/apartments.json' with { type: 'json' };
 
 const apartmentList: Apartment[] = apartments as Apartment[];
 
