@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+out/
+
+# Temp files
+.temp/
+temp/
+tmp/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+
+# Vite/TS caches
+.vite/
+.svelte-kit/
+.cache/
+.turbo/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated audio or uploads
+*.wav
+*.mp3
+*.m4a
+*.ogg
+uploads/
