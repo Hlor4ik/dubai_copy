@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { Apartment } from '../types';
 import styles from './ApartmentPage.module.css';
 
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
 export default function ApartmentPage() {
   const { landingId } = useParams<{ landingId: string }>();
   const [apartment, setApartment] = useState<Apartment | null>(null);
@@ -14,7 +16,7 @@ export default function ApartmentPage() {
   useEffect(() => {
     async function fetchApartment() {
       try {
-        const response = await fetch(`/api/apartment/${landingId}`);
+        const response = await fetch(`${API_BASE}/apartment/${landingId}`);
         if (!response.ok) {
           throw new Error('Apartment not found');
         }
