@@ -1,6 +1,7 @@
 {
   "name": "dubai-ai-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Backend for Dubai AI Real Estate Consultant",
   "main": "dist/index.js",
   "scripts": {
