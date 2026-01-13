@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { CallState, SpeakingState, ChatResponse, SessionStartResponse } from '../types';
+import { CallState, SpeakingState, SessionStartResponse } from '../types';
 
 // Use env variable for API base URL (e.g., http://YOUR_IP:3000/api for external access)
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
