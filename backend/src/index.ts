@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 
 import { DialogueContext } from './types/index.js';
@@ -34,9 +33,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // In-memory хранилище сессий
 const dialogueContexts: Map<string, DialogueContext> = new Map();
-
-// Хранилище сгенерированных лендингов
-const generatedLandings: Map<string, string> = new Map(); // uuid -> apartmentId
 
 // === API Routes ===
 
@@ -125,8 +121,7 @@ app.post('/api/chat/voice', upload.single('audio'), async (req, res) => {
           : undefined);
       
       if (apartmentForLanding) {
-        const landingId = uuidv4();
-        generatedLandings.set(landingId, apartmentForLanding.id);
+        const landingId = apartmentForLanding.id; // Use apartment ID directly
         context.selectedApartment = apartmentForLanding.id;
         markLandingGenerated(sessionId, apartmentForLanding.id);
         landingUrl = `/apartment/${landingId}`;
@@ -286,8 +281,7 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
         const textToSpeak = 'Отлично! Я создаю для вас персональную страницу с подробной информацией. Ссылка появится на экране.';
         await synthesizeAndEmit(textToSpeak);
         
-        const landingId = uuidv4();
-        generatedLandings.set(landingId, apartment.id);
+        const landingId = apartment.id; // Use apartment ID directly
         context.selectedApartment = apartment.id;
         markLandingGenerated(sessionId, apartment.id);
         const landingUrl = `/apartment/${landingId}`;
@@ -332,8 +326,7 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       
       let landingUrl: string | undefined;
       if (result.action === 'confirm_interest' && result.apartment) {
-        const landingId = uuidv4();
-        generatedLandings.set(landingId, result.apartment.id);
+        const landingId = result.apartment.id; // Use apartment ID directly
         context.selectedApartment = result.apartment.id;
         markLandingGenerated(sessionId, result.apartment.id);
         landingUrl = `/apartment/${landingId}`;
@@ -415,9 +408,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
         if (apartment && !textToSpeak) {
           console.log(`[STREAM] Generating landing for apartment:`, apartment.id);
           textToSpeak = 'Отлично! Я создаю для вас персональную страницу с подробной информацией. Ссылка появится на экране.';
-          const landingId = uuidv4();
-          console.log(`[STREAM] Landing ID generated:`, landingId);
-          generatedLandings.set(landingId, apartment.id);
+          const landingId = apartment.id; // Use apartment ID directly
+          console.log(`[STREAM] Landing ID (apartment.id):`, landingId);
           console.log(`[STREAM] Landing stored, landingUrl:`, `/apartment/${landingId}`);
           context.selectedApartment = apartment.id;
           markLandingGenerated(sessionId, apartment.id);
@@ -494,12 +486,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
 
 // Получить данные квартиры для лендинга
 app.get('/api/apartment/:landingId', (req, res) => {
-  const apartmentId = generatedLandings.get(req.params.landingId);
-  
-  if (!apartmentId) {
-    return res.status(404).json({ error: 'Landing not found' });
-  }
-
+  // landingId теперь это и есть apartmentId
+  const apartmentId = req.params.landingId;
   const apartment = getApartmentById(apartmentId);
   
   if (!apartment) {
