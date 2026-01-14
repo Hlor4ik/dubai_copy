@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && npx puppeteer browsers install chrome",
     "start": "node dist/index.js"
   },
   "dependencies": {

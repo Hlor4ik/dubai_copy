@@ -52,10 +52,13 @@ BACKEND_URL=https://your-backend.onrender.com
 
 1. Откройте ваш backend service на Render
 2. Перейдите в Environment → Add Environment Variable
-3. Добавьте три переменные:
-   - `GREEN_API_URL`
-   - `GREEN_API_TOKEN`
-   - `BACKEND_URL`
+3. Добавьте переменные:
+   - `GREEN_API_URL` = ваш URL (например: https://1103.api.green-api.com/waInstance1103473225/)
+   - `GREEN_API_TOKEN` = ваш токен
+   - `BACKEND_URL` = ваш backend URL (например: https://your-backend.onrender.com)
+   - `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` = false
+
+⚠️ **Важно:** Render должен пересобрать проект чтобы установить Chrome. Деплой может занять 5-10 минут при первой сборке.
 
 ## Шаг 7: Тестирование
 
