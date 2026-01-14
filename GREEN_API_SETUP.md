@@ -41,7 +41,7 @@ GREEN_API_TOKEN=ваш-токен-здесь
 BACKEND_URL=https://your-backend.onrender.com
 ```
 
-Формат GREEN_API_URL: `{apiUrl}/waInstance{idInstance}/`
+Формат GREEN_API_URL: `{apiUrl}/waInstance{idInstance}/` (обязательно со слешем в конце!)
 
 Замените:
 - `https://1103.api.green-api.com/waInstance1103473225/` → ваш apiUrl + idInstance

@@ -22,7 +22,7 @@ export async function sendWhatsAppFile(
     console.log(`[WhatsApp] Sending file to ${chatId}`);
 
     const response = await axios.post(
-      `${GREEN_API_URL}/sendFileByUrl`,
+      `${GREEN_API_URL}sendFileByUrl?token=${GREEN_API_TOKEN}`,
       {
         chatId,
         urlFile: fileUrl,
@@ -32,7 +32,6 @@ export async function sendWhatsAppFile(
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GREEN_API_TOKEN}`,
         },
         timeout: 30000,
       }
@@ -65,7 +64,7 @@ export async function sendWhatsAppMessage(
     console.log(`[WhatsApp] Sending message to ${chatId}`);
 
     const response = await axios.post(
-      `${GREEN_API_URL}/sendMessage`,
+      `${GREEN_API_URL}sendMessage?token=${GREEN_API_TOKEN}`,
       {
         chatId,
         message,
@@ -73,7 +72,6 @@ export async function sendWhatsAppMessage(
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GREEN_API_TOKEN}`,
         },
         timeout: 10000,
       }
