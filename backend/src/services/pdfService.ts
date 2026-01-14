@@ -77,6 +77,19 @@ export async function generateSimplePDF(apartment: Apartment): Promise<Buffer> {
 
     const page = await browser.newPage();
     
+    // Собираем только существующие детали
+    const details = [
+      { label: 'Площадь', value: `${apartment.area} м²` },
+      { label: 'Этаж', value: apartment.floor },
+    ];
+    
+    if (apartment.bedrooms) {
+      details.push({ label: 'Спален', value: apartment.bedrooms });
+    }
+    if (apartment.bathrooms) {
+      details.push({ label: 'Ванных', value: apartment.bathrooms });
+    }
+    
     // Создаем HTML контент напрямую
     const html = `
       <!DOCTYPE html>
@@ -87,129 +100,233 @@ export async function generateSimplePDF(apartment: Apartment): Promise<Buffer> {
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            padding: 40px;
             background: #fff;
-          }
-          .header {
-            border-bottom: 3px solid #d4af37;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-          }
-          h1 {
             color: #1a1a1a;
-            font-size: 32px;
-            margin-bottom: 10px;
           }
-          .location {
-            color: #666;
-            font-size: 18px;
+          
+          .container {
+            max-width: 800px;
+            margin: 0 auto;
           }
-          .price {
+          
+          .header {
+            background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+          }
+          
+          .header h1 {
             font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 600;
+          }
+          
+          .header .location {
+            font-size: 18px;
+            opacity: 0.9;
+          }
+          
+          .price-section {
+            background: #f8f8f8;
+            padding: 30px 40px;
+            text-align: center;
+          }
+          
+          .price {
+            font-size: 48px;
             color: #d4af37;
             font-weight: bold;
-            margin: 20px 0;
           }
-          .details {
+          
+          .price-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+          }
+          
+          ${apartment.images && apartment.images.length > 0 ? `
+          .gallery {
+            padding: 40px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin: 30px 0;
           }
-          .detail-item {
-            padding: 15px;
-            background: #f5f5f5;
+          
+          .gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
             border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
           }
+          
+          .gallery img:first-child {
+            grid-column: 1 / -1;
+            height: 350px;
+          }
+          ` : ''}
+          
+          .details {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(${Math.min(details.length, 2)}, 1fr);
+            gap: 20px;
+          }
+          
+          .detail-card {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+          }
+          
           .detail-label {
             color: #666;
             font-size: 14px;
-            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
           }
+          
           .detail-value {
             color: #1a1a1a;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
           }
+          
+          .description-section {
+            padding: 40px;
+            background: white;
+          }
+          
+          .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            border-left: 4px solid #d4af37;
+            padding-left: 15px;
+          }
+          
           .description {
-            margin: 30px 0;
             line-height: 1.8;
             color: #444;
+            font-size: 16px;
           }
-          .features {
-            margin: 30px 0;
+          
+          .features-section {
+            padding: 40px;
+            background: #f8f8f8;
           }
-          .features h3 {
-            margin-bottom: 15px;
-            color: #1a1a1a;
+          
+          .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
           }
-          .features ul {
-            list-style: none;
+          
+          .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
           }
-          .features li {
-            padding: 8px 0;
-            padding-left: 25px;
-            position: relative;
-            color: #444;
-          }
-          .features li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
+          
+          .feature-icon {
             color: #d4af37;
             font-weight: bold;
+            font-size: 20px;
+            margin-right: 12px;
           }
+          
+          .feature-text {
+            color: #444;
+            font-size: 14px;
+          }
+          
           .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
+            background: #1a1a1a;
+            color: white;
+            padding: 30px 40px;
             text-align: center;
-            color: #666;
+          }
+          
+          .footer-logo {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #d4af37;
+          }
+          
+          .footer-text {
+            color: #999;
+            font-size: 14px;
           }
         </style>
       </head>
       <body>
-        <div class="header">
-          <h1>${apartment.name || `Квартира ${apartment.id}`}</h1>
-          <div class="location">${apartment.district}, Dubai</div>
-        </div>
-
-        <div class="price">${new Intl.NumberFormat('ru-RU').format(apartment.price)} AED</div>
-
-        <div class="details">
-          <div class="detail-item">
-            <div class="detail-label">Площадь</div>
-            <div class="detail-value">${apartment.area} м²</div>
+        <div class="container">
+          <!-- Header -->
+          <div class="header">
+            <h1>${apartment.name || `Квартира в ${apartment.district}`}</h1>
+            <div class="location">📍 ${apartment.district}, Dubai, UAE</div>
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Спален</div>
-            <div class="detail-value">${apartment.bedrooms || 'N/A'}</div>
+          
+          <!-- Price -->
+          <div class="price-section">
+            <div class="price">${new Intl.NumberFormat('ru-RU').format(apartment.price)} AED</div>
+            <div class="price-label">≈ ${new Intl.NumberFormat('ru-RU').format(Math.round(apartment.price / 3.67))} USD</div>
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Ванных</div>
-            <div class="detail-value">${apartment.bathrooms || 'N/A'}</div>
+          
+          ${apartment.images && apartment.images.length > 0 ? `
+          <!-- Gallery -->
+          <div class="gallery">
+            ${apartment.images.slice(0, 3).map((img: string) => `
+              <img src="${img}" alt="Property photo" />
+            `).join('')}
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Этаж</div>
-            <div class="detail-value">${apartment.floor}</div>
+          ` : ''}
+          
+          <!-- Details -->
+          <div class="details">
+            ${details.map(detail => `
+              <div class="detail-card">
+                <div class="detail-label">${detail.label}</div>
+                <div class="detail-value">${detail.value}</div>
+              </div>
+            `).join('')}
           </div>
-        </div>
-
-        <div class="description">
-          <p>${apartment.description}</p>
-        </div>
-
-        ${apartment.features && apartment.features.length > 0 ? `
-        <div class="features">
-          <h3>Особенности:</h3>
-          <ul>
-            ${apartment.features.map((f: string) => `<li>${f}</li>`).join('')}
-          </ul>
-        </div>
-        ` : ''}
-
-        <div class="footer">
-          <p>Dubai AI Real Estate | Ваш персональный консультант по недвижимости</p>
+          
+          <!-- Description -->
+          <div class="description-section">
+            <h2 class="section-title">Описание</h2>
+            <div class="description">${apartment.description}</div>
+          </div>
+          
+          ${apartment.features && apartment.features.length > 0 ? `
+          <!-- Features -->
+          <div class="features-section">
+            <h2 class="section-title">Особенности</h2>
+            <div class="features-grid">
+              ${apartment.features.map((f: string) => `
+                <div class="feature-item">
+                  <div class="feature-icon">✓</div>
+                  <div class="feature-text">${f}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          <!-- Footer -->
+          <div class="footer">
+            <div class="footer-logo">◆ Dubai AI</div>
+            <div class="footer-text">Ваш персональный AI-консультант по недвижимости в Дубае</div>
+          </div>
         </div>
       </body>
       </html>
