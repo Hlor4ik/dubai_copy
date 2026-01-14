@@ -5,6 +5,7 @@ import { CallButton } from '../components/CallButton';
 import { MicButton } from '../components/MicButton';
 import { VoiceIndicator } from '../components/VoiceIndicator';
 import { LandingPopup } from '../components/LandingPopup';
+import PhoneModal from '../components/PhoneModal';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
@@ -20,14 +21,24 @@ export default function HomePage() {
     stopRecording,
     endCall,
     restart,
+    sendPresentation,
   } = useVoiceChat();
 
   const [showPopup, setShowPopup] = useState(false);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [currentApartmentId, setCurrentApartmentId] = useState<string | null>(null);
+  const [isSendingPresentation, setIsSendingPresentation] = useState(false);
+  const [presentationSent, setPresentationSent] = useState(false);
 
   // Показываем попап когда появляется landingUrl
   useEffect(() => {
     if (landingUrl) {
       console.log('[UI] Landing URL received:', landingUrl);
+      // Извлекаем apartment ID из URL
+      const match = landingUrl.match(/\/apartment\/([^/]+)/);
+      if (match) {
+        setCurrentApartmentId(match[1]);
+      }
       setShowPopup(true);
     }
   }, [landingUrl]);
@@ -189,7 +200,49 @@ export default function HomePage() {
       <LandingPopup
         url={showPopup ? landingUrl : null}
         onClose={() => setShowPopup(false)}
+        onRequestPresentation={() => {
+          setShowPhoneModal(true);
+          setPresentationSent(false);
+        }}
       />
+
+      {/* Phone Modal */}
+      <PhoneModal
+        isOpen={showPhoneModal}
+        onClose={() => {
+          setShowPhoneModal(false);
+          setPresentationSent(false);
+        }}
+        isLoading={isSendingPresentation}
+        onSubmit={async (phoneNumber) => {
+          if (!currentApartmentId) return;
+          
+          setIsSendingPresentation(true);
+          const result = await sendPresentation(currentApartmentId, phoneNumber);
+          setIsSendingPresentation(false);
+          
+          if (result.success) {
+            setPresentationSent(true);
+            setTimeout(() => {
+              setShowPhoneModal(false);
+              setPresentationSent(false);
+            }, 2000);
+          } else {
+            alert('Ошибка отправки. Попробуйте снова.');
+          }
+        }}
+      />
+      
+      {presentationSent && (
+        <motion.div
+          className={styles.successToast}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+        >
+          ✓ Презентация отправлена в WhatsApp!
+        </motion.div>
+      )}
     </div>
   );
 }

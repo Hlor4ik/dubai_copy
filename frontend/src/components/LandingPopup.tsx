@@ -4,9 +4,10 @@ import styles from './LandingPopup.module.css';
 interface Props {
   url: string | null;
   onClose: () => void;
+  onRequestPresentation?: () => void;
 }
 
-export function LandingPopup({ url, onClose }: Props) {
+export function LandingPopup({ url, onClose, onRequestPresentation }: Props) {
   if (!url) return null;
 
   return (
@@ -34,14 +35,27 @@ export function LandingPopup({ url, onClose }: Props) {
           <p className={styles.text}>
             Мы подготовили для вас персональную презентацию квартиры
           </p>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.link}
-          >
-            Открыть страницу квартиры
-          </a>
+          
+          <div className={styles.actions}>
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+            >
+              Открыть страницу
+            </a>
+            
+            {onRequestPresentation && (
+              <button 
+                className={styles.whatsappButton}
+                onClick={onRequestPresentation}
+              >
+                📱 Получить в WhatsApp
+              </button>
+            )}
+          </div>
+          
           <button className={styles.close} onClick={onClose}>
             Продолжить диалог
           </button>

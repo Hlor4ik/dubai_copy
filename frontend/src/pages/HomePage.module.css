@@ -278,3 +278,17 @@
     width: 100%;
   }
 }
+
+.successToast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 50px;
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+  font-weight: 600;
+  z-index: 2000;
+}

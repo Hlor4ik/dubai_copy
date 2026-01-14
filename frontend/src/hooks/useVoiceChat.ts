@@ -397,6 +397,26 @@ export function useVoiceChat() {
     isPlayingRef.current = false;
   }, []);
 
+  const sendPresentation = useCallback(async (apartmentId: string, phoneNumber: string) => {
+    try {
+      const response = await fetch(`${API_BASE}/send-presentation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apartmentId, phoneNumber }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send presentation');
+      }
+
+      const data = await response.json();
+      return { success: data.success, error: data.error };
+    } catch (err: any) {
+      console.error('[Presentation] Error:', err);
+      return { success: false, error: err.message };
+    }
+  }, []);
+
   return {
     callState,
     speakingState,
@@ -409,5 +429,6 @@ export function useVoiceChat() {
     stopRecording,
     endCall,
     restart,
+    sendPresentation,
   };
 }

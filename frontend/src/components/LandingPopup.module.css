@@ -52,6 +52,13 @@
   margin-bottom: var(--space-xl);
 }
 
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
 .link {
   display: block;
   background: var(--gradient-gold);
@@ -61,13 +68,33 @@
   letter-spacing: 1px;
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-full);
-  margin-bottom: var(--space-md);
   transition: all var(--transition-normal);
+  text-decoration: none;
 }
 
 .link:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-button);
+}
+
+.whatsappButton {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.whatsappButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
 }
 
 .close {
