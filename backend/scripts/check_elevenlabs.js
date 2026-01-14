@@ -4,7 +4,7 @@
 const fetch = globalThis.fetch || require('node-fetch');
 
 const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
-const voiceId = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB';
+const voiceId = process.env.ELEVENLABS_VOICE_ID || '7G0NvIkWRnU0Dqjgz13p';
 const apiKey = process.env.ELEVENLABS_API_KEY;
 
 if (!apiKey) {

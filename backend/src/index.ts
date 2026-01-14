@@ -184,27 +184,12 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       res.write(`data: ${data}\n\n`);
     };
 
-    // Send immediate ACK message to give user feedback while LLM processes
-    const ackMessages = [
-      'Сейчас уточню...',
-      'Секундочку, ищу...',
-      'Подождите, посмотрю...',
-      'Сейчас посмотрим...',
-      'Уточняю информацию...',
-    ];
-    const ack = ackMessages[Math.floor(Math.random() * ackMessages.length)];
-    try {
-      const ackAudio = await synthesizeSpeech(ack);
-      sendEvent('audio', ackAudio.toString('base64'));
-      console.log(`[STREAM] Sent ACK: "${ack}"`);
-    } catch (e) {
-      console.error('[STREAM] Failed to synthesize ACK:', e);
-    }
+    // ACK messages removed for faster response time
 
-    // Buffer tokens and synthesize on short phrase boundaries (~40 chars or punctuation)
+    // Buffer tokens and synthesize on short phrase boundaries (~20 chars or punctuation)
     // to trigger TTS faster and start playback sooner
     let tokenBuffer = '';
-    const MAX_BUFFER_LEN = 40; // characters per synthesis — very aggressive for low latency
+    const MAX_BUFFER_LEN = 20; // characters per synthesis — very aggressive for low latency
     const phraseRegex = /([.!?,])\s+/; // phrase boundary
 
     // Helper to synthesize and emit a phrase
