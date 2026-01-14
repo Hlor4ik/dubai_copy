@@ -29,6 +29,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Раздача временных файлов (PDF)
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use('/temp', express.static(path.join(__dirname, '../temp')));
+
 // Multer для загрузки аудио
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -481,6 +488,68 @@ app.get('/api/apartment/:landingId', (req, res) => {
   }
 
   res.json(apartment);
+});
+
+// Отправить презентацию в WhatsApp
+app.post('/api/send-presentation', async (req, res) => {
+  try {
+    const { apartmentId, phoneNumber } = req.body;
+
+    if (!apartmentId || !phoneNumber) {
+      return res.status(400).json({ error: 'apartmentId and phoneNumber are required' });
+    }
+
+    console.log(`[Presentation] Request for apartment ${apartmentId} to ${phoneNumber}`);
+
+    const apartment = getApartmentById(apartmentId);
+    if (!apartment) {
+      return res.status(404).json({ error: 'Apartment not found' });
+    }
+
+    // Генерируем простой PDF (без рендера лендинга для скорости)
+    const { generateSimplePDF } = await import('./services/pdfService.js');
+    const pdfBuffer = await generateSimplePDF(apartment);
+
+    // Сохраняем временно PDF
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    const tempDir = path.join(process.cwd(), 'temp');
+    await fs.mkdir(tempDir, { recursive: true });
+    
+    const pdfFileName = `presentation_${apartmentId}_${Date.now()}.pdf`;
+    const pdfPath = path.join(tempDir, pdfFileName);
+    await fs.writeFile(pdfPath, pdfBuffer);
+
+    // Создаем публичный URL для PDF (нужен для Green API)
+    const pdfUrl = `${process.env.BACKEND_URL || `http://localhost:${PORT}`}/temp/${pdfFileName}`;
+
+    // Отправляем в WhatsApp
+    const { sendWhatsAppFile } = await import('./services/whatsappService.js');
+    const result = await sendWhatsAppFile(
+      phoneNumber,
+      pdfUrl,
+      `🏠 Презентация: ${apartment.name}\n${apartment.district}, ${new Intl.NumberFormat('ru-RU').format(apartment.price)} AED`
+    );
+
+    // Удаляем файл через 5 минут
+    setTimeout(async () => {
+      try {
+        await fs.unlink(pdfPath);
+        console.log(`[Presentation] Deleted temp file: ${pdfFileName}`);
+      } catch (err) {
+        console.error('[Presentation] Error deleting temp file:', err);
+      }
+    }, 5 * 60 * 1000);
+
+    if (result.success) {
+      res.json({ success: true, message: 'Презентация отправлена в WhatsApp' });
+    } else {
+      res.status(500).json({ success: false, error: result.error });
+    }
+  } catch (error: any) {
+    console.error('[Presentation] Error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Завершить сессию

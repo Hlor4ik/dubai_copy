@@ -1,11 +1,15 @@
 export interface Apartment {
   id: string;
+  name?: string;
   district: string;
   area: number;
   floor: number;
   price: number;
   description: string;
   images: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  features?: string[];
 }
 
 export interface SearchParams {
