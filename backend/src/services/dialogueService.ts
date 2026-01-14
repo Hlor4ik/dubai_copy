@@ -57,6 +57,24 @@ export async function processDialogue(
     };
   }
 
+  // Check for budget/parameter change requests
+  if (/(давай|поменяй|измен|уменьш|увелич|другой|изменим|поменяем).*(бюджет|цен|цену|цен|параметр)/i.test(lowerMsg) || /^(другой бюджет|изменить цену|уменьшить|увеличить).*/i.test(lowerMsg)) {
+    return {
+      response: 'Понятно, давайте подберём для вас подходящий вариант с новым бюджетом. Какая сумма вас интересует?',
+      paramsUpdate: {},
+      action: 'none',
+    };
+  }
+
+  // Check for budget/parameter change requests
+  if (/((давай|поменяй|измен|уменьш|увелич|другой|измением|поменяем).*(бюджет|цен|цену|цена|параметр))/i.test(lowerMsg) || /^(другой бюджет|изменить цену|уменьшить|увеличить).*/i.test(lowerMsg)) {
+    return {
+      response: 'Понятно, давайте подберём для вас подходящий вариант с новым бюджетом. Какая сумма вас интересует?',
+      paramsUpdate: {},
+      action: 'none',
+    };
+  }
+
   // Check for district changes in local message (JBR variations)
   const districtMatch = lowerMsg.match(/\b(джибиар|джи би ар|gbr|jbr|дубай марина|дубаи марина|марина|палм джумейра|пальм джумейра|даунтаун|бизнес бей|dubai hills|jvc|creek harbour|difc)\b/i);
   let detectedDistrict: string | null = null;

@@ -203,10 +203,19 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     const synthesizeAndEmit = async (text: string) => {
       if (!text.trim()) return;
       try {
-        const audioBuf = await synthesizeSpeech(text.trim());
+        // Clean text from artifacts: remove multiple punctuation, extra spaces, quotes
+        const cleanText = text
+          .trim()
+          .replace(/[.!?…]+([.!?…])/g, '$1')  // Remove duplicate punctuation
+          .replace(/\s{2,}/g, ' ')  // Normalize multiple spaces
+          .replace(/["«»]/g, '')  // Remove quotes
+          .replace(/\.{2,}/g, '.')  // Remove multiple dots
+          .trim();
+        
+        const audioBuf = await synthesizeSpeech(cleanText);
         const b64 = audioBuf.toString('base64');
         sendEvent('audio', b64);
-        console.log(`[STREAM TTS] Synthesized: "${text.trim().substring(0, 50)}..."`);
+        console.log(`[STREAM TTS] Synthesized: "${cleanText.substring(0, 50)}..."`);
       } catch (e) {
         console.error('[STREAM TTS] synth failed', e);
         sendEvent('error', JSON.stringify({ message: 'tts_error' }));

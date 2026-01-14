@@ -2,6 +2,13 @@ const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
 
 // Синтезирует одну фразу
 async function synthesizePhrase(text: string, apiKey: string, voiceId: string): Promise<Buffer> {
+  // Очищаем текст: убираем множественную пунктуацию, странные символы
+  const cleanText = text
+    .replace(/[.!?…]+([.!?…])/g, '$1')  // Remove duplicate punctuation
+    .replace(/\s{2,}/g, ' ')  // Normalize spaces
+    .replace(/["«»]/g, '')  // Remove quotes that can cause artifacts
+    .trim();
+
   const response = await fetch(`${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`, {
     method: 'POST',
     headers: {
@@ -10,7 +17,7 @@ async function synthesizePhrase(text: string, apiKey: string, voiceId: string): 
       'xi-api-key': apiKey,
     },
     body: JSON.stringify({
-      text: text.trim(),
+      text: cleanText,
       model_id: 'eleven_multilingual_v2',
       voice_settings: {
         stability: 0.4,           // Чуть ниже для вариативности
