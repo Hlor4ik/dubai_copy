@@ -57,22 +57,40 @@ export async function processDialogue(
     };
   }
 
+  // Check for district changes in local message (JBR variations)
+  const districtMatch = lowerMsg.match(/\b(джибиар|джи би ар|gbr|jbr|дубай марина|дубаи марина|марина|палм джумейра|пальм джумейра|даунтаун|бизнес бей|dubai hills|jvc|creek harbour|difc)\b/i);
+  let detectedDistrict: string | null = null;
+  if (districtMatch) {
+    const raw = districtMatch[1].toLowerCase();
+    if (/джибиар|джи би ар|gbr|jbr/.test(raw)) detectedDistrict = 'JBR';
+    else if (/дубай марина|дубаи марина|марина/.test(raw)) detectedDistrict = 'Dubai Marina';
+    else if (/палм|пальм/.test(raw)) detectedDistrict = 'Palm Jumeirah';
+    else if (/даунтаун/.test(raw)) detectedDistrict = 'Downtown Dubai';
+    else if (/бизнес бей/.test(raw)) detectedDistrict = 'Business Bay';
+    else if (/dubai hills/.test(raw)) detectedDistrict = 'Dubai Hills';
+    else if (/jvc/.test(raw)) detectedDistrict = 'JVC';
+    else if (/creek/.test(raw)) detectedDistrict = 'Creek Harbour';
+    else if (/difc/.test(raw)) detectedDistrict = 'DIFC';
+  }
+
   // Check for "start search now" when user has at least one parameter
   const hasParams = Object.keys(context.params).length > 0;
-  if (hasParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать)[,.\s!]?/i.test(lowerMsg)) {
-    const availableApartments = searchApartments(context.params, context.shownApartments);
+  if (hasParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?/i.test(lowerMsg)) {
+    // Apply detected district change
+    const searchParams = detectedDistrict ? { ...context.params, district: detectedDistrict } : context.params;
+    const availableApartments = searchApartments(searchParams, context.shownApartments);
     if (availableApartments.length > 0) {
       const apartment = availableApartments[0];
       return {
         response: `Вот вариант: ${formatApartmentForVoice(apartment)} Нравится?`,
-        paramsUpdate: {},
+        paramsUpdate: detectedDistrict ? { district: detectedDistrict } : {},
         action: 'search',
         apartment,
       };
     } else {
       return {
         response: 'По этим параметрам нет вариантов. Уточните запрос.',
-        paramsUpdate: {},
+        paramsUpdate: detectedDistrict ? { district: detectedDistrict } : {},
         action: 'none',
       };
     }

@@ -16,7 +16,13 @@ export async function sendWhatsAppFile(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Форматируем номер (Green API требует формат: 79991234567@c.us)
-    const formattedPhone = phoneNumber.replace(/\D/g, ''); // убираем все не-цифры
+    let formattedPhone = phoneNumber.replace(/\D/g, ''); // убираем все не-цифры
+    
+    // Конвертируем 8 в 7 для российских номеров (89991234567 → 79991234567)
+    if (formattedPhone.startsWith('8') && formattedPhone.length === 11) {
+      formattedPhone = '7' + formattedPhone.slice(1);
+    }
+    
     const chatId = `${formattedPhone}@c.us`;
 
     console.log(`[WhatsApp] Sending file to ${chatId}`);
