@@ -3,6 +3,44 @@ import apartments from '../data/apartments.json' with { type: 'json' };
 
 const apartmentList: Apartment[] = apartments as Apartment[];
 
+/**
+ * Заменяет английские термины на русские для естественной озвучки
+ */
+export function localizeForVoice(text: string): string {
+  let result = text;
+  
+  // Районы Дубая
+  result = result.replace(/\bDubai Marina\b/gi, 'Дубай Марина');
+  result = result.replace(/\bDowntown Dubai\b/gi, 'Даунтаун Дубай');
+  result = result.replace(/\bPalm Jumeirah\b/gi, 'Палм Джумейра');
+  result = result.replace(/\bJBR\b/gi, 'Джибиар');
+  result = result.replace(/\bBusiness Bay\b/gi, 'Бизнес Бей');
+  result = result.replace(/\bDubai Hills\b/gi, 'Дубай Хиллс');
+  result = result.replace(/\bJVC\b/gi, 'ДжиВиСи');
+  result = result.replace(/\bCreek Harbour\b/gi, 'Крик Харбур');
+  result = result.replace(/\bDIFC\b/gi, 'ДИФС');
+  
+  // Единицы и параметры
+  result = result.replace(/\bm\b/g, 'квадратных метров');
+  result = result.replace(/\bm²\b/g, 'квадратных метров');
+  result = result.replace(/\bAED\b/g, 'дирхам');
+  result = result.replace(/\bmlb\b/gi, 'млн');
+  result = result.replace(/\bmillion\b/gi, 'миллион');
+  
+  // Популярные фразы
+  result = result.replace(/\bfurnished\b/gi, 'меблирована');
+  result = result.replace(/\bunfurnished\b/gi, 'неуставленная');
+  result = result.replace(/\bbeach\b/gi, 'пляж');
+  result = result.replace(/\bpool\b/gi, 'бассейн');
+  result = result.replace(/\bgym\b/gi, 'спортзал');
+  result = result.replace(/\bparkingkk\b/gi, 'парковка');
+  result = result.replace(/\bview\b/gi, 'вид');
+  result = result.replace(/\bterrace\b/gi, 'терраса');
+  result = result.replace(/\bbalcony\b/gi, 'балкон');
+  
+  return result;
+}
+
 export function searchApartments(params: SearchParams, excludeIds: string[] = []): Apartment[] {
   return apartmentList.filter(apt => {
     // Исключаем уже показанные
@@ -53,7 +91,9 @@ export function getAllDistricts(): string[] {
 export function formatApartmentForVoice(apt: Apartment): string {
   const priceMillions = (apt.price / 1000000).toFixed(1);
   // Короткое описание для быстрой озвучки
-  return `${apt.district}, ${apt.area} квадратов, ${apt.floor} этаж, ${priceMillions} миллионов.`;
+  let description = `${apt.district}, ${apt.area} квадратов, ${apt.floor} этаж, ${priceMillions} миллионов.`;
+  // Заменяем английские термины на русские
+  return localizeForVoice(description);
 }
 
 export function formatApartmentShort(apt: Apartment): string {

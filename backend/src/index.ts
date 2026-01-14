@@ -8,6 +8,7 @@ import { DialogueContext } from './types/index.js';
 import { transcribeAudio } from './services/sttService.js';
 import { synthesizeSpeech } from './services/ttsService.js';
 import { processDialogue, createInitialGreeting, streamProcessDialogue } from './services/dialogueService.js';
+import { localizeForVoice } from './services/apartmentService.js';
 import { getApartmentById, searchApartments, formatApartmentForVoice } from './services/apartmentService.js';
 import {
   startSession,
@@ -62,7 +63,7 @@ app.post('/api/session/start', async (_req, res) => {
     startSession(sessionId);
 
     // Генерируем аудио приветствия
-    const audioBuffer = await synthesizeSpeech(greeting);
+    const audioBuffer = await synthesizeSpeech(localizeForVoice(greeting));
 
     res.json({
       sessionId,
@@ -140,7 +141,7 @@ app.post('/api/chat/voice', upload.single('audio'), async (req, res) => {
     }
 
     // 6. TTS - синтезируем ответ
-    const audioBuffer = await synthesizeSpeech(result.response);
+    const audioBuffer = await synthesizeSpeech(localizeForVoice(result.response));
 
     res.json({
       userText,
@@ -204,13 +205,16 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       if (!text.trim()) return;
       try {
         // Clean text from artifacts: remove multiple punctuation, extra spaces, quotes
-        const cleanText = text
+        let cleanText = text
           .trim()
           .replace(/[.!?…]+([.!?…])/g, '$1')  // Remove duplicate punctuation
           .replace(/\s{2,}/g, ' ')  // Normalize multiple spaces
           .replace(/["«»]/g, '')  // Remove quotes
           .replace(/\.{2,}/g, '.')  // Remove multiple dots
           .trim();
+        
+        // Localize English terms for natural pronunciation
+        cleanText = localizeForVoice(cleanText);
         
         const audioBuf = await synthesizeSpeech(cleanText);
         const b64 = audioBuf.toString('base64');
