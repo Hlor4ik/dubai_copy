@@ -90,10 +90,42 @@ export function getAllDistricts(): string[] {
 
 export function formatApartmentForVoice(apt: Apartment): string {
   const priceMillions = (apt.price / 1000000).toFixed(1);
-  // Короткое описание для быстрой озвучки
-  let description = `${apt.district}, ${apt.area} квадратов, ${apt.floor} этаж, ${priceMillions} миллионов.`;
-  // Заменяем английские термины на русские
+  
+  // Правильные падежи и склонения для натурального звучания
+  const areaText = `${apt.area} ${getSquareMetersForm(apt.area)}`;
+  const floorText = `${apt.floor} ${getFloorForm(apt.floor)}`;
+  const priceText = `${priceMillions} ${getMillionForm(parseFloat(priceMillions))}`;
+  
+  let description = `${apt.district}, ${areaText}, ${floorText}, ${priceText}`;
   return localizeForVoice(description);
+}
+
+// Правильная форма "квадратный метр"
+function getSquareMetersForm(num: number): string {
+  const lastDigit = num % 10;
+  const lastTwo = num % 100;
+  if (lastTwo >= 11 && lastTwo <= 14) return 'квадратных метров';
+  if (lastDigit === 1) return 'квадратный метр';
+  if (lastDigit >= 2 && lastDigit <= 4) return 'квадратных метра';
+  return 'квадратных метров';
+}
+
+// Правильная форма "этаж"
+function getFloorForm(num: number): string {
+  return 'этаж'; // "15 этаж" звучит естественнее чем "15-й этаж" в быстрой речи
+}
+
+// Правильная форма "миллион"
+function getMillionForm(num: number): string {
+  // Для дробных чисел всегда "миллиона" (2.5 миллиона)
+  if (num % 1 !== 0) return 'миллиона дирхам';
+  
+  const lastDigit = Math.floor(num) % 10;
+  const lastTwo = Math.floor(num) % 100;
+  if (lastTwo >= 11 && lastTwo <= 14) return 'миллионов дирхам';
+  if (lastDigit === 1) return 'миллион дирхам';
+  if (lastDigit >= 2 && lastDigit <= 4) return 'миллиона дирхам';
+  return 'миллионов дирхам';
 }
 
 export function formatApartmentShort(apt: Apartment): string {

@@ -194,10 +194,10 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
 
     // ACK messages removed for faster response time
 
-    // Buffer tokens and synthesize on short phrase boundaries (~20 chars or punctuation)
+    // Buffer tokens and synthesize on short phrase boundaries (~15 chars or punctuation)
     // to trigger TTS faster and start playback sooner
     let tokenBuffer = '';
-    const MAX_BUFFER_LEN = 20; // characters per synthesis — very aggressive for low latency
+    const MAX_BUFFER_LEN = 15; // characters per synthesis — aggressive for low latency
     const phraseRegex = /([.!?,])\s+/; // phrase boundary
 
     // Helper to synthesize and emit a phrase
