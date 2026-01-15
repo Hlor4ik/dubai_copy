@@ -375,3 +375,89 @@ export async function streamProcessDialogue(
 export function createInitialGreeting(): string {
   return 'Здравствуйте! Я консультант по недвижимости в Дубае. Какую квартиру ищете?';
 }
+
+// Stream LLM response with TTS synthesis as tokens arrive
+export async function streamProcessDialogueWithTTS(
+  userMessage: string,
+  context: DialogueContext,
+  onToken: (token: string) => Promise<void>,
+  onSynthesis: (text: string) => Promise<void>
+): Promise<{ finalResponse?: string; error?: string }> {
+  const availableApartments = searchApartments(context.params, context.shownApartments);
+  const lastShownApartmentId = context.shownApartments[context.shownApartments.length - 1];
+  
+  let contextInfo = `\n\nКОНТЕКСТ ДИАЛОГА:`;
+  contextInfo += `\nТекущие параметры: ${JSON.stringify(context.params)}`;
+  contextInfo += `\nПоказано квартир: ${context.shownApartments.length}`;
+  if (lastShownApartmentId) {
+    contextInfo += `\nПоследняя показанная квартира ID: ${lastShownApartmentId}`;
+  }
+  contextInfo += `\nДоступно ещё квартир: ${availableApartments.length}`;
+  if (availableApartments.length > 0) {
+    contextInfo += `\nСледующая квартира для показа: ${formatApartmentShort(availableApartments[0])}`;
+  }
+
+  const recentHistory = context.messageHistory.slice(-4);
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: 'system', content: SYSTEM_PROMPT + contextInfo },
+    ...recentHistory.map(msg => ({ role: msg.role as 'user' | 'assistant', content: msg.content })),
+    { role: 'user', content: userMessage },
+  ];
+
+  try {
+    const completion = await getOpenAI().chat.completions.create({
+      model: 'gpt-4o',
+      messages,
+      temperature: 0.3,
+      max_tokens: 200,
+      stream: true,
+    });
+
+    let buffer = '';
+    let ttsBuffer = '';
+
+    for await (const part of completion) {
+      const delta = part.choices?.[0]?.delta?.content;
+      if (!delta) continue;
+      
+      buffer += delta;
+      await onToken(delta);
+      
+      // Accumulate text for TTS and trigger synthesis at phrase boundaries
+      ttsBuffer += delta;
+      
+      // Trigger TTS when we hit phrase boundaries or accumulate enough text
+      const phrases = ttsBuffer.match(/[^.!?]*[.!?]+/g);
+      if (phrases && phrases.length > 0) {
+        // Keep the last incomplete phrase
+        const matched = phrases.join('');
+        const remaining = ttsBuffer.substring(matched.length);
+        
+        // Synthesize all complete phrases
+        for (const phrase of phrases) {
+          await onSynthesis(phrase);
+        }
+        
+        ttsBuffer = remaining;
+      } else if (ttsBuffer.length > 30) {
+        // If no phrase boundary but buffer is large, find last space and synthesize
+        const lastSpace = ttsBuffer.lastIndexOf(' ');
+        if (lastSpace > 15) {
+          const phrase = ttsBuffer.substring(0, lastSpace);
+          await onSynthesis(phrase);
+          ttsBuffer = ttsBuffer.substring(lastSpace).trim();
+        }
+      }
+    }
+    
+    // Synthesize any remaining text
+    if (ttsBuffer.trim()) {
+      await onSynthesis(ttsBuffer);
+    }
+
+    return { finalResponse: buffer };
+  } catch (err: any) {
+    console.error('[LLM STREAM TTS] Streaming failed, error:', err?.message || err);
+    return { error: err?.message || 'stream_failed' };
+  }
+}

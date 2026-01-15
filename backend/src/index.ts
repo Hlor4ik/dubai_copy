@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { DialogueContext } from './types/index.js';
 import { transcribeAudio } from './services/sttService.js';
 import { synthesizeSpeech } from './services/ttsService.js';
-import { processDialogue, createInitialGreeting, streamProcessDialogue } from './services/dialogueService.js';
+import { processDialogue, createInitialGreeting, streamProcessDialogue, streamProcessDialogueWithTTS } from './services/dialogueService.js';
 import { localizeForVoice } from './services/apartmentService.js';
 import { getApartmentById, searchApartments, formatApartmentForVoice } from './services/apartmentService.js';
 import {
@@ -255,8 +255,19 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       }
     }
 
-    // Start streaming LLM -> buffer
-    const { finalResponse, error } = await streamProcessDialogue(userText, context, onToken);
+    // Start streaming LLM with TTS callback for real-time audio synthesis
+    let synthesisError = false;
+    const onSynthesisRequest = async (text: string) => {
+      try {
+        if (!text.trim()) return;
+        await synthesizeAndEmit(text);
+      } catch (e) {
+        console.error('[STREAM] Synthesis callback failed:', e);
+        synthesisError = true;
+      }
+    };
+
+    const { finalResponse, error } = await streamProcessDialogueWithTTS(userText, context, onToken, onSynthesisRequest);
 
     // If stream failed, fall back to processDialogue
     if (error) {
