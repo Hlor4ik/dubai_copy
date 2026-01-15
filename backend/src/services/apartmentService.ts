@@ -88,6 +88,22 @@ export function getAllDistricts(): string[] {
   return [...new Set(apartmentList.map(apt => apt.district))];
 }
 
+// Получить статистику по району
+export function getDistrictStats(district: string): { minPrice: number; maxPrice: number; count: number } | null {
+  const districtApartments = apartmentList.filter(apt => 
+    apt.district.toLowerCase() === district.toLowerCase()
+  );
+  
+  if (districtApartments.length === 0) return null;
+  
+  const prices = districtApartments.map(apt => apt.price);
+  return {
+    minPrice: Math.min(...prices),
+    maxPrice: Math.max(...prices),
+    count: districtApartments.length
+  };
+}
+
 export function formatApartmentForVoice(apt: Apartment): string {
   const priceMillions = (apt.price / 1000000).toFixed(1);
   

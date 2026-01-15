@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { DialogueContext, SearchParams, Apartment } from '../types/index.js';
-import { searchApartments, formatApartmentForVoice, formatApartmentShort } from './apartmentService.js';
+import { searchApartments, formatApartmentForVoice, formatApartmentShort, getDistrictStats } from './apartmentService.js';
 
 let openaiClient: OpenAI | null = null;
 
@@ -60,13 +60,18 @@ export async function processDialogue(
     };
   }
 
-  // Check for budget/parameter change requests
-  if (/(давай|поменяй|измен|уменьш|увелич|другой|изменим|поменяем).*(бюджет|цен|цену|цен|параметр)/i.test(lowerMsg) || /^(другой бюджет|изменить цену|уменьшить|увеличить).*/i.test(lowerMsg)) {
-    return {
-      response: 'Понятно, давайте подберём для вас подходящий вариант с новым бюджетом. Какая сумма вас интересует?',
-      paramsUpdate: {},
-      action: 'none',
-    };
+  // Check for questions about prices in district
+  if (/(минимальн|максимальн|сколько стоит|какая цена|какие цены).*(район|этом)/i.test(lowerMsg) && context.params.district) {
+    const stats = getDistrictStats(context.params.district);
+    if (stats) {
+      const minMln = (stats.minPrice / 1000000).toFixed(1);
+      const maxMln = (stats.maxPrice / 1000000).toFixed(1);
+      return {
+        response: `В ${context.params.district} цены от ${minMln} до ${maxMln} миллионов дирхам. Хотите изменить бюджет?`,
+        paramsUpdate: {},
+        action: 'none',
+      };
+    }
   }
 
   // Check for district changes in local message (expanded patterns for all districts)
@@ -110,9 +115,9 @@ export async function processDialogue(
   }
   
   // Don't trigger local search if user is changing parameters (let LLM handle it)
-  const isChangingParams = /(измени|поменя|увеличи|уменьши|другой|теперь).*(бюджет|цен|район|параметр|площадь|этаж)/i.test(lowerMsg);
+  const isChangingParams = /(измен|помен|увелич|уменьш|друг|теперь|повыс|пониз|подним|сниз).*(бюджет|цен|район|параметр|площад|этаж)/i.test(lowerMsg);
   
-  if (hasParams && !isChangingParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?/i.test(lowerMsg)) {
+  if (hasParams && !isChangingParams && /^(нет|все|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?$/i.test(lowerMsg)) {
     // Apply detected district change
     const searchParams = detectedDistrict ? { ...context.params, district: detectedDistrict } : context.params;
     const availableApartments = searchApartments(searchParams, context.shownApartments);
