@@ -109,7 +109,10 @@ export async function processDialogue(
     }
   }
   
-  if (hasParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?/i.test(lowerMsg)) {
+  // Don't trigger local search if user is changing parameters (let LLM handle it)
+  const isChangingParams = /(измени|поменя|увеличи|уменьши|другой|теперь).*(бюджет|цен|район|параметр|площадь|этаж)/i.test(lowerMsg);
+  
+  if (hasParams && !isChangingParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?/i.test(lowerMsg)) {
     // Apply detected district change
     const searchParams = detectedDistrict ? { ...context.params, district: detectedDistrict } : context.params;
     const availableApartments = searchApartments(searchParams, context.shownApartments);
