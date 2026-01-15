@@ -124,11 +124,43 @@ export function formatApartmentForVoice(apt: Apartment): string {
   
   // Правильные падежи и склонения для натурального звучания
   const areaText = `${apt.area} ${getSquareMetersForm(apt.area)}`;
-  const floorText = `${apt.floor} ${getFloorForm(apt.floor)}`;
-  const priceText = `${priceMillions} ${getMillionForm(parseFloat(priceMillions))}`;
+  const floorText = getOrdinalFloor(apt.floor);
+  const priceText = formatPriceForVoice(parseFloat(priceMillions));
   
   let description = `${apt.district}, ${areaText}, ${floorText}, ${priceText}`;
   return localizeForVoice(description);
+}
+
+// Конвертирует число этажа в порядковое числительное
+function getOrdinalFloor(floor: number): string {
+  const ordinals: { [key: number]: string } = {
+    1: 'первый', 2: 'второй', 3: 'третий', 4: 'четвёртый', 5: 'пятый',
+    6: 'шестой', 7: 'седьмой', 8: 'восьмой', 9: 'девятый', 10: 'десятый',
+    11: 'одиннадцатый', 12: 'двенадцатый', 13: 'тринадцатый', 14: 'четырнадцатый', 15: 'пятнадцатый',
+    16: 'шестнадцатый', 17: 'семнадцатый', 18: 'восемнадцатый', 19: 'девятнадцатый', 20: 'двадцатый',
+    25: 'двадцать пятый', 30: 'тридцатый', 45: 'сорок пятый', 50: 'пятидесятый'
+  };
+  
+  if (ordinals[floor]) {
+    return `${ordinals[floor]} этаж`;
+  }
+  
+  // Для остальных чисел используем числительное + этаж
+  return `${floor} этаж`;
+}
+
+// Форматирует цену для естественного произношения
+function formatPriceForVoice(millions: number): string {
+  // Если дробное число (например 2.1)
+  if (millions % 1 !== 0) {
+    const parts = millions.toFixed(1).split('.');
+    const intPart = parts[0];
+    const decPart = parts[1];
+    return `${intPart} и ${decPart} миллиона дирхам`;
+  }
+  
+  // Для целых чисел используем правильную форму
+  return `${millions.toFixed(1)} ${getMillionForm(millions)}`;
 }
 
 // Правильная форма "квадратный метр"
@@ -139,11 +171,6 @@ function getSquareMetersForm(num: number): string {
   if (lastDigit === 1) return 'квадратный метр';
   if (lastDigit >= 2 && lastDigit <= 4) return 'квадратных метра';
   return 'квадратных метров';
-}
-
-// Правильная форма "этаж"
-function getFloorForm(num: number): string {
-  return 'этаж'; // "15 этаж" звучит естественнее чем "15-й этаж" в быстрой речи
 }
 
 // Правильная форма "миллион"
