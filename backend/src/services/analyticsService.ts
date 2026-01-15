@@ -12,6 +12,7 @@ export function startSession(sessionId: string): void {
     landingGenerated: false,
   };
   sessions.set(sessionId, analytics);
+  console.log(`[SESSION] Started: ${sessionId}`);
 }
 
 export function updateSession(context: DialogueContext): void {
@@ -39,6 +40,7 @@ export function endSession(sessionId: string): SessionAnalytics | undefined {
   if (session) {
     session.endTime = Date.now();
     session.duration = session.endTime - session.startTime;
+    console.log(`[SESSION] Ended: ${sessionId} (duration: ${session.duration}ms)`);
     return session;
   }
   return undefined;

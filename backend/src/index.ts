@@ -306,6 +306,7 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     }
 
     // Parse finalResponse JSON and apply dialogue logic
+    console.log(`[STREAM] Raw finalResponse: "${finalResponse?.substring(0, 200) || ''}..."`);
     let parsed: any = undefined;
     try {
       parsed = JSON.parse(finalResponse || '');
@@ -319,6 +320,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
         }
       }
     }
+    console.log(`[STREAM] Parsed action: ${parsed?.action || 'none'}`);
+    console.log(`[STREAM] Params update:`, JSON.stringify(parsed?.params_update || {}));
 
     let textToSpeak = '';
     let action = 'none';

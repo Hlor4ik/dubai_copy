@@ -415,6 +415,8 @@ export async function streamProcessDialogueWithTTS(
 
     let buffer = '';
     let ttsBuffer = '';
+    let jsonParsed = false;
+    let responseText = '';
 
     for await (const part of completion) {
       const delta = part.choices?.[0]?.delta?.content;
@@ -423,36 +425,36 @@ export async function streamProcessDialogueWithTTS(
       buffer += delta;
       await onToken(delta);
       
-      // Accumulate text for TTS and trigger synthesis at phrase boundaries
-      ttsBuffer += delta;
-      
-      // Trigger TTS when we hit phrase boundaries or accumulate enough text
-      const phrases = ttsBuffer.match(/[^.!?]*[.!?]+/g);
-      if (phrases && phrases.length > 0) {
-        // Keep the last incomplete phrase
-        const matched = phrases.join('');
-        const remaining = ttsBuffer.substring(matched.length);
-        
-        // Synthesize all complete phrases
-        for (const phrase of phrases) {
-          await onSynthesis(phrase);
-        }
-        
-        ttsBuffer = remaining;
-      } else if (ttsBuffer.length > 30) {
-        // If no phrase boundary but buffer is large, find last space and synthesize
-        const lastSpace = ttsBuffer.lastIndexOf(' ');
-        if (lastSpace > 15) {
-          const phrase = ttsBuffer.substring(0, lastSpace);
-          await onSynthesis(phrase);
-          ttsBuffer = ttsBuffer.substring(lastSpace).trim();
+      // Once we have a complete JSON, extract response and synthesize only that
+      if (!jsonParsed && buffer.includes('}')) {
+        try {
+          const parsed = JSON.parse(buffer);
+          if (parsed.response) {
+            jsonParsed = true;
+            responseText = parsed.response;
+            console.log(`[LLM STREAM] Parsed response: "${responseText.substring(0, 100)}..."`);
+            // Synthesize the response text
+            ttsBuffer = responseText;
+            // Process response text for TTS
+            const phrases = ttsBuffer.match(/[^.!?]*[.!?]+/g);
+            if (phrases && phrases.length > 0) {
+              for (const phrase of phrases) {
+                await onSynthesis(phrase);
+              }
+              const matched = phrases.join('');
+              const remaining = ttsBuffer.substring(matched.length);
+              if (remaining.trim()) {
+                await onSynthesis(remaining);
+              }
+            } else {
+              await onSynthesis(ttsBuffer);
+            }
+            ttsBuffer = '';
+          }
+        } catch (e) {
+          // JSON not complete yet, keep buffering
         }
       }
-    }
-    
-    // Synthesize any remaining text
-    if (ttsBuffer.trim()) {
-      await onSynthesis(ttsBuffer);
     }
 
     return { finalResponse: buffer };
@@ -460,4 +462,4 @@ export async function streamProcessDialogueWithTTS(
     console.error('[LLM STREAM TTS] Streaming failed, error:', err?.message || err);
     return { error: err?.message || 'stream_failed' };
   }
-}
+}}
