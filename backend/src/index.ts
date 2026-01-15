@@ -368,10 +368,14 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
           if (!context.shownApartments.includes(apartment.id)) {
             context.shownApartments.push(apartment.id);
           }
-          textToSpeak = `Вот вариант: ${formatApartmentForVoice(apartment)} Нравится?`;
+          // Use LLM response + apartment details
+          const apartmentDesc = formatApartmentForVoice(apartment);
+          textToSpeak = `${parsed.response} Вот вариант: ${apartmentDesc} Нравится?`;
+          console.log(`[STREAM] Search found apartment: ${apartment.id}`);
         } else {
           action = 'none';
           textToSpeak = 'По этим параметрам нет вариантов. Что изменим?';
+          console.log(`[STREAM] Search found no apartments with params:`, JSON.stringify(context.params));
         }
       } else {
         textToSpeak = parsed.response || '';
