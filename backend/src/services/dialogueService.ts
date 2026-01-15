@@ -170,8 +170,8 @@ export async function processDialogue(
     }
   }
 
-  // Check for exit
-  if (/^(спасибо|до свидания|пока|выход|exit|bye|не надо|всё|конец|хватит)/i.test(lowerMsg)) {
+  // Check for exit - be careful not to catch "всё, начинай" or "всё, давай"
+  if (/^(спасибо|до свидания|пока|выход|exit|bye|не надо|конец|хватит)(\s|$)/i.test(lowerMsg) && !/начин|давай|покажи|ищи/i.test(lowerMsg)) {
     return {
       response: 'Спасибо! Удачи в поиске!',
       paramsUpdate: {},
@@ -351,7 +351,7 @@ export async function streamProcessDialogue(
       model: 'gpt-4o',
       messages,
       temperature: 0.3,
-      max_tokens: 300,
+      max_tokens: 200, // Short responses for speed
       stream: true,
     });
 

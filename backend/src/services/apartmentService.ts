@@ -33,7 +33,7 @@ export function localizeForVoice(text: string): string {
   result = result.replace(/\bbeach\b/gi, 'пляж');
   result = result.replace(/\bpool\b/gi, 'бассейн');
   result = result.replace(/\bgym\b/gi, 'спортзал');
-  result = result.replace(/\bparkingkk\b/gi, 'парковка');
+  result = result.replace(/\bparking\b/gi, 'парковка');
   result = result.replace(/\bview\b/gi, 'вид');
   result = result.replace(/\bterrace\b/gi, 'терраса');
   result = result.replace(/\bbalcony\b/gi, 'балкон');
@@ -90,9 +90,11 @@ export function getAllDistricts(): string[] {
 
 // Получить статистику по району
 export function getDistrictStats(district: string): { minPrice: number; maxPrice: number; count: number } | null {
-  const districtApartments = apartmentList.filter(apt => 
-    apt.district.toLowerCase() === district.toLowerCase()
-  );
+  const searchDistrict = district.toLowerCase();
+  const districtApartments = apartmentList.filter(apt => {
+    const aptDistrict = apt.district.toLowerCase();
+    return aptDistrict.includes(searchDistrict) || searchDistrict.includes(aptDistrict);
+  });
   
   if (districtApartments.length === 0) return null;
   

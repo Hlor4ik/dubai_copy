@@ -192,15 +192,7 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       res.write(`data: ${data}\n\n`);
     };
 
-    // ACK messages removed for faster response time
-
-    // Buffer tokens and synthesize on short phrase boundaries (~15 chars or punctuation)
-    // to trigger TTS faster and start playback sooner
-    let tokenBuffer = '';
-    const MAX_BUFFER_LEN = 15; // characters per synthesis — aggressive for low latency
-    const phraseRegex = /([.!?,])\s+/; // phrase boundary
-
-    // Helper to synthesize and emit a phrase
+    // Helper to synthesize and emit speech
     const synthesizeAndEmit = async (text: string) => {
       if (!text.trim()) return;
       try {
@@ -226,58 +218,14 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       }
     };
 
-    // Collect full LLM response first (no streaming to TTS yet)
-    let llmBuffer = '';
-    const onToken = async (token: string) => {
-      llmBuffer += token;
+    // LLM token collector (not used for TTS streaming, full response processed after)
+    const onToken = async (_token: string) => {
+      // Tokens collected by streamProcessDialogue internally
     };
 
-    // Local fast-path for common confirm_interest phrases (skip LLM if detected)
+    // Local fast-path for confirm_interest when apartment was just shown
     const lowerText = userText.toLowerCase().trim();
     const lastShownId = context.shownApartments[context.shownApartments.length - 1];
-    
-    // Check for "start search now" when user has at least one parameter
-    const hasParams = Object.keys(context.params).length > 0;
-    console.log(`[STREAM] Local detector check: hasParams=${hasParams}, lastShownId=${lastShownId}, lowerText="${lowerText}"`);
-    
-    if (hasParams && !lastShownId && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать)[,.\s!]?/i.test(lowerText)) {
-      console.log('[STREAM] Local search trigger detected:', userText);
-      const availableApartments = searchApartments(context.params, context.shownApartments);
-      if (availableApartments.length > 0) {
-        const apartment = availableApartments[0];
-        if (!context.shownApartments.includes(apartment.id)) {
-          context.shownApartments.push(apartment.id);
-        }
-        const textToSpeak = `Вот вариант: ${formatApartmentForVoice(apartment)} Нравится?`;
-        await synthesizeAndEmit(textToSpeak);
-        
-        context.messageHistory.push({ role: 'assistant', content: textToSpeak });
-        updateSession(context);
-        
-        sendEvent('done', JSON.stringify({
-          response: textToSpeak,
-          action: 'search',
-          apartment,
-          params: context.params,
-        }));
-        
-        return res.end();
-      } else {
-        const textToSpeak = 'По этим параметрам нет вариантов. Уточните запрос.';
-        await synthesizeAndEmit(textToSpeak);
-        
-        context.messageHistory.push({ role: 'assistant', content: textToSpeak });
-        updateSession(context);
-        
-        sendEvent('done', JSON.stringify({
-          response: textToSpeak,
-          action: 'none',
-          params: context.params,
-        }));
-        
-        return res.end();
-      }
-    }
     
     // Check for "да", "да покажи", "хочу эту", etc. when apartment was just shown
     if (lastShownId && (/^да(\s|$)|^(ну )?да[,!\.]?\s*(покажи|покаж|эту|её)?$|^покажи\s+(мне|её|эту)|^хочу\s+эту|^беру|^подходит|^нравится|^отлично|^хорошо$/i.test(lowerText))) {
@@ -447,28 +395,9 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       textToSpeak = finalResponse || 'Извините, ошибка.';
     }
 
-    // Now stream the processed text to TTS in phrases
+    // Synthesize entire response at once for faster playback (no fragmentation delays)
     console.log(`[STREAM] Final text to speak: "${textToSpeak.substring(0, 100)}..."`);
-    let ttsBuffer = textToSpeak;
-    
-    while (ttsBuffer.length > 0) {
-      const phraseMatch = ttsBuffer.match(phraseRegex);
-      if (phraseMatch) {
-        const endIdx = ttsBuffer.indexOf(phraseMatch[0]) + phraseMatch[0].length;
-        const phrase = ttsBuffer.substring(0, endIdx);
-        ttsBuffer = ttsBuffer.substring(endIdx);
-        await synthesizeAndEmit(phrase);
-      } else if (ttsBuffer.length >= MAX_BUFFER_LEN) {
-        const lastSpace = ttsBuffer.lastIndexOf(' ', MAX_BUFFER_LEN);
-        const cutPoint = lastSpace > MAX_BUFFER_LEN / 2 ? lastSpace : MAX_BUFFER_LEN;
-        const phrase = ttsBuffer.substring(0, cutPoint);
-        ttsBuffer = ttsBuffer.substring(cutPoint).trim();
-        await synthesizeAndEmit(phrase);
-      } else {
-        await synthesizeAndEmit(ttsBuffer);
-        break;
-      }
-    }
+    await synthesizeAndEmit(textToSpeak);
 
     // Update context
     context.messageHistory.push({ role: 'assistant', content: textToSpeak });
