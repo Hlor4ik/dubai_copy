@@ -414,9 +414,6 @@ export async function streamProcessDialogueWithTTS(
     });
 
     let buffer = '';
-    let ttsBuffer = '';
-    let jsonParsed = false;
-    let responseText = '';
 
     for await (const part of completion) {
       const delta = part.choices?.[0]?.delta?.content;
@@ -424,38 +421,9 @@ export async function streamProcessDialogueWithTTS(
       
       buffer += delta;
       await onToken(delta);
-      
-      // Once we have a complete JSON, extract response and synthesize only that
-      if (!jsonParsed && buffer.includes('}')) {
-        try {
-          const parsed = JSON.parse(buffer);
-          if (parsed.response) {
-            jsonParsed = true;
-            responseText = parsed.response;
-            console.log(`[LLM STREAM] Parsed response: "${responseText.substring(0, 100)}..."`);
-            // Synthesize the response text
-            ttsBuffer = responseText;
-            // Process response text for TTS
-            const phrases = ttsBuffer.match(/[^.!?]*[.!?]+/g);
-            if (phrases && phrases.length > 0) {
-              for (const phrase of phrases) {
-                await onSynthesis(phrase);
-              }
-              const matched = phrases.join('');
-              const remaining = ttsBuffer.substring(matched.length);
-              if (remaining.trim()) {
-                await onSynthesis(remaining);
-              }
-            } else {
-              await onSynthesis(ttsBuffer);
-            }
-            ttsBuffer = '';
-          }
-        } catch (e) {
-          // JSON not complete yet, keep buffering
-        }
-      }
     }
+    
+    console.log(`[LLM STREAM] Completed, buffer length: ${buffer.length}`);
 
     return { finalResponse: buffer };
   } catch (err: any) {

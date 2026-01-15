@@ -20,16 +20,29 @@ export function localizeForVoice(text: string): string {
   result = result.replace(/\bCreek Harbour\b/gi, 'Крик Харбур');
   result = result.replace(/\bDIFC\b/gi, 'ДИФС');
   
+  // Числа с единицами - более естественное произношение
+  // "1.8 млн" -> "один и восемь десятых миллиона"
+  result = result.replace(/(\d+)\.(\d+)\s*млн/gi, (match, int, dec) => {
+    return `${int} и ${dec} десятых миллиона`;
+  });
+  
+  // "65 м²" -> "65 квадратных метров"
+  result = result.replace(/(\d+)\s*м²/g, (match, num) => {
+    return `${num} квадратных метров`;
+  });
+  
+  // "5 этаж" -> "пятый этаж" (оставляем как есть, ElevenLabs хорошо озвучивает)
+  
   // Единицы и параметры
-  result = result.replace(/\bm\b/g, 'квадратных метров');
+  result = result.replace(/\bm\b/g, 'метров');
   result = result.replace(/\bm²\b/g, 'квадратных метров');
-  result = result.replace(/\bAED\b/g, 'дирхам');
-  result = result.replace(/\bmlb\b/gi, 'млн');
-  result = result.replace(/\bmillion\b/gi, 'миллион');
+  result = result.replace(/\bAED\b/gi, 'дирхам');
+  result = result.replace(/\bmlb\b/gi, 'миллионов');
+  result = result.replace(/\bmillion\b/gi, 'миллионов');
   
   // Популярные фразы
   result = result.replace(/\bfurnished\b/gi, 'меблирована');
-  result = result.replace(/\bunfurnished\b/gi, 'неуставленная');
+  result = result.replace(/\bunfurnished\b/gi, 'без мебели');
   result = result.replace(/\bbeach\b/gi, 'пляж');
   result = result.replace(/\bpool\b/gi, 'бассейн');
   result = result.replace(/\bgym\b/gi, 'спортзал');

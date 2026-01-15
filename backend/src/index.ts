@@ -384,7 +384,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       textToSpeak = finalResponse || 'Извините, ошибка.';
     }
 
-    // Synthesize entire response at once for faster playback (no fragmentation delays)
+    // Localize and synthesize entire response
+    console.log(`[STREAM] Text to synthesize: "${textToSpeak.substring(0, 150)}..."`);
     await synthesizeAndEmit(textToSpeak);
 
     // Update context
