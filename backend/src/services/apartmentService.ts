@@ -149,18 +149,38 @@ function getOrdinalFloor(floor: number): string {
   return `${floor} этаж`;
 }
 
+// Конвертирует число в текстовое числительное
+function numberToText(num: number): string {
+  const units: { [key: number]: string } = {
+    0: 'ноль', 1: 'один', 2: 'два', 3: 'три', 4: 'четыре', 5: 'пять',
+    6: 'шесть', 7: 'семь', 8: 'восемь', 9: 'девять', 10: 'десять',
+    11: 'одиннадцать', 12: 'двенадцать', 13: 'тринадцать', 14: 'четырнадцать', 15: 'пятнадцать',
+    16: 'шестнадцать', 17: 'семнадцать', 18: 'восемнадцать', 19: 'девятнадцать', 20: 'двадцать'
+  };
+  
+  if (units[num]) {
+    return units[num];
+  }
+  
+  // Для чисел больше 20 возвращаем как есть
+  return num.toString();
+}
+
 // Форматирует цену для естественного произношения
 function formatPriceForVoice(millions: number): string {
   // Если дробное число (например 2.1)
   if (millions % 1 !== 0) {
     const parts = millions.toFixed(1).split('.');
-    const intPart = parts[0];
+    const intPart = parseInt(parts[0]);
     const decPart = parts[1];
-    return `${intPart} и ${decPart} миллиона дирхам`;
+    const intText = numberToText(intPart);
+    return `${intText} и ${decPart} миллиона дирхам`;
   }
   
   // Для целых чисел используем правильную форму
-  return `${millions.toFixed(1)} ${getMillionForm(millions)}`;
+  const intNum = Math.floor(millions);
+  const numText = numberToText(intNum);
+  return `${numText} ${getMillionForm(millions)}`;
 }
 
 // Правильная форма "квадратный метр"
