@@ -42,7 +42,7 @@ export function localizeForVoice(text: string): string {
   // Единицы и параметры
   result = result.replace(/\bm\b/g, 'метров');
   result = result.replace(/\bm²\b/g, 'квадратных метров');
-  result = result.replace(/\bAED\b/gi, 'дирхам');
+  result = result.replace(/\bAED\b/gi, 'дирха́м');
   result = result.replace(/\bmlb\b/gi, 'миллионов');
   result = result.replace(/\bmillion\b/gi, 'миллионов');
   
@@ -197,7 +197,7 @@ function formatPriceForVoice(millions: number): string {
     const intPart = parseInt(parts[0]);
     const decPart = parts[1];
     const intText = numberToText(intPart);
-    return `${intText} и ${decPart} миллиона дирхам`;
+    return `${intText} и ${decPart} миллиона дирха́м`;
   }
   
   // Для целых чисел используем правильную форму
@@ -219,14 +219,14 @@ function getSquareMetersForm(num: number): string {
 // Правильная форма "миллион"
 function getMillionForm(num: number): string {
   // Для дробных чисел всегда "миллиона" (2.5 миллиона)
-  if (num % 1 !== 0) return 'миллиона дирхам';
+  if (num % 1 !== 0) return 'миллиона дирха́м';
   
   const lastDigit = Math.floor(num) % 10;
   const lastTwo = Math.floor(num) % 100;
-  if (lastTwo >= 11 && lastTwo <= 14) return 'миллионов дирхам';
-  if (lastDigit === 1) return 'миллион дирхам';
-  if (lastDigit >= 2 && lastDigit <= 4) return 'миллиона дирхам';
-  return 'миллионов дирхам';
+  if (lastTwo >= 11 && lastTwo <= 14) return 'миллионов дирха́м';
+  if (lastDigit === 1) return 'миллион дирха́м';
+  if (lastDigit >= 2 && lastDigit <= 4) return 'миллиона дирха́м';
+  return 'миллионов дирха́м';
 }
 
 export function formatApartmentShort(apt: Apartment): string {
