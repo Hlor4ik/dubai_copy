@@ -21,10 +21,11 @@ JSON FORMAT (exact keys):
 PARAM EXTRACTION:
 - Extract only when user clearly mentions it; otherwise leave null
 - price_* in AED; area in m²; district from list: Dubai Marina, Downtown Dubai, Palm Jumeirah, JBR, Business Bay, Dubai Hills, Creek Harbour, JVC, DIFC
+- DISTRICT RECOGNITION: Accept variations like "Пальмс/Палмс/Palms Джумейра" → Palm Jumeirah; "Марина" → Dubai Marina; "ДжиБиАр/GBR" → JBR; "Даунтаун" → Downtown Dubai
 - Do NOT overwrite a previously known parameter unless user changes it
 
 ACTION RULES:
-- "search": if user has ANY parameter and wants to see options ("покажи", "ищи", "давай", "начинай") OR already 2+ params
+- "search": if (user has ANY parameter AND wants to see: "покажи", "ищи", "давай", "начинай") OR (already 2+ params including newly mentioned district)
 - "next": only when user rejects current option ("другую", "следующую", "не подходит")
 - "confirm_interest": only after an apartment was shown and user agrees ("да", "эта", "нравится", "беру", "хочу эту")
 - "none": default continue dialog
@@ -75,24 +76,46 @@ export async function processDialogue(
     };
   }
 
-  // Check for district changes in local message (JBR variations)
-  const districtMatch = lowerMsg.match(/\b(джибиар|джи би ар|gbr|jbr|дубай марина|дубаи марина|марина|палм джумейра|пальм джумейра|даунтаун|бизнес бей|dubai hills|jvc|creek harbour|difc)\b/i);
+  // Check for district changes in local message (expanded patterns for all districts)
+  const districtMatch = lowerMsg.match(/\b(джибиар|джи би ар|джей би ар|gbr|jbr|дубай марина|дубаи марина|марина|marina|палм джумейра|пальм джумейра|пальмс джумейра|палмс джумейра|palm jumeirah|palms|даунтаун|downtown|бизнес бей|бизнес бэй|business bay|дубай хиллс|дубаи хиллс|dubai hills|hills|джей ви си|jvc|крик харбур|крик харбор|creek harbour|creek|дифс|difc)\b/i);
   let detectedDistrict: string | null = null;
   if (districtMatch) {
     const raw = districtMatch[1].toLowerCase();
-    if (/джибиар|джи би ар|gbr|jbr/.test(raw)) detectedDistrict = 'JBR';
-    else if (/дубай марина|дубаи марина|марина/.test(raw)) detectedDistrict = 'Dubai Marina';
-    else if (/палм|пальм/.test(raw)) detectedDistrict = 'Palm Jumeirah';
-    else if (/даунтаун/.test(raw)) detectedDistrict = 'Downtown Dubai';
-    else if (/бизнес бей/.test(raw)) detectedDistrict = 'Business Bay';
-    else if (/dubai hills/.test(raw)) detectedDistrict = 'Dubai Hills';
-    else if (/jvc/.test(raw)) detectedDistrict = 'JVC';
-    else if (/creek/.test(raw)) detectedDistrict = 'Creek Harbour';
+    if (/джибиар|джи би ар|джей би ар|gbr|jbr/.test(raw)) detectedDistrict = 'JBR';
+    else if (/дубай марина|дубаи марина|марина|marina/.test(raw)) detectedDistrict = 'Dubai Marina';
+    else if (/палм|пальм|palms?/.test(raw)) detectedDistrict = 'Palm Jumeirah';
+    else if (/даунтаун|downtown/.test(raw)) detectedDistrict = 'Downtown Dubai';
+    else if (/бизнес бей|бизнес бэй|business bay/.test(raw)) detectedDistrict = 'Business Bay';
+    else if (/дубай хиллс|дубаи хиллс|dubai hills|hills/.test(raw)) detectedDistrict = 'Dubai Hills';
+    else if (/джей ви си|jvc/.test(raw)) detectedDistrict = 'JVC';
+    else if (/крик|creek/.test(raw)) detectedDistrict = 'Creek Harbour';
     else if (/difc/.test(raw)) detectedDistrict = 'DIFC';
   }
 
   // Check for "start search now" when user has at least one parameter
   const hasParams = Object.keys(context.params).length > 0;
+  
+  // If user just says a district name when params exist, auto-search
+  if (hasParams && detectedDistrict && lowerMsg.split(/\s+/).length <= 4) {
+    const searchParams = { ...context.params, district: detectedDistrict };
+    const availableApartments = searchApartments(searchParams, context.shownApartments);
+    if (availableApartments.length > 0) {
+      const apartment = availableApartments[0];
+      return {
+        response: `Вот вариант: ${formatApartmentForVoice(apartment)} Нравится?`,
+        paramsUpdate: { district: detectedDistrict },
+        action: 'search',
+        apartment,
+      };
+    } else {
+      return {
+        response: 'По этим параметрам нет вариантов. Уточните запрос.',
+        paramsUpdate: { district: detectedDistrict },
+        action: 'none',
+      };
+    }
+  }
+  
   if (hasParams && /^(нет|всё|начинай|начни|ищи|покажи|давай|поехали|го|поиск|варианты|показать|посмотрим)[,.\s!]?/i.test(lowerMsg)) {
     // Apply detected district change
     const searchParams = detectedDistrict ? { ...context.params, district: detectedDistrict } : context.params;
