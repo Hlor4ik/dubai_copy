@@ -273,7 +273,7 @@ export async function processDialogue(
       if (results.length > 0) {
         apartment = results[0];
         // Короткое описание квартиры
-        finalResponse = `Вот вариант. ${formatApartmentForVoice(apartment)} Нравится или показать другую?`;
+        finalResponse = `Вот вариант. ${formatApartmentForVoice(apartment)} Ну как, нравится?`;
       } else {
         finalResponse = 'По этим параметрам больше нет вариантов. Что изменим?';
         parsed.action = 'none';
