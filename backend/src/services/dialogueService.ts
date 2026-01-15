@@ -206,10 +206,10 @@ export async function processDialogue(
   ];
 
   const completion = await getOpenAI().chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-4o-mini',
     messages,
     temperature: 0.3,
-    max_tokens: 500,
+    max_tokens: 200,
     response_format: { type: 'json_object' },
   });
 
@@ -347,10 +347,10 @@ export async function streamProcessDialogue(
 
   try {
     const completion = await getOpenAI().chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4o-mini',
       messages,
       temperature: 0.3,
-      max_tokens: 200, // Short responses for speed
+      max_tokens: 200,
       stream: true,
     });
 
@@ -405,7 +405,7 @@ export async function streamProcessDialogueWithTTS(
 
   try {
     const completion = await getOpenAI().chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4o-mini',
       messages,
       temperature: 0.3,
       max_tokens: 200,

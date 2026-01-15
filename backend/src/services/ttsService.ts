@@ -16,7 +16,7 @@ export async function synthesizeSpeech(text: string): Promise<Buffer> {
     .replace(/\.{3,}/g, '.')  // Remove excessive dots
     .trim();
 
-  const response = await fetch(`${ELEVENLABS_API_URL}/text-to-speech/${voiceId}`, {
+  const response = await fetch(`${ELEVENLABS_API_URL}/text-to-speech/${voiceId}?optimize_streaming_latency=3`, {
     method: 'POST',
     headers: {
       'Accept': 'audio/mpeg',
@@ -25,11 +25,11 @@ export async function synthesizeSpeech(text: string): Promise<Buffer> {
     },
     body: JSON.stringify({
       text: cleanText,
-      model_id: 'eleven_multilingual_v2',
+      model_id: 'eleven_turbo_v2_5',
       voice_settings: {
-        stability: 0.5,           // Баланс стабильности
-        similarity_boost: 0.75,    // Схожесть с оригинальным голосом
-        style: 0.5,               // Выразительность для естественной интонации (0-1)
+        stability: 0.5,
+        similarity_boost: 0.75,
+        style: 0.4,
         use_speaker_boost: true,
       },
     }),
