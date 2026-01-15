@@ -30,36 +30,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Валидация распознанного текста - проверяем что это не помехи в микрофоне
-function isValidUserInput(text: string, context: DialogueContext): boolean {
-  if (!text || text.trim().length < 2) return false;
-  
-  const lowerText = text.toLowerCase();
-  
-  // Проверяем на имена/бессмыслицу (редактор, корректор и т.д.)
-  if (/^(редактор|корректор|переводчик|звукооператор|режиссер|продюсер|оператор)/.test(lowerText)) {
-    return false;
-  }
-  
-  // Проверяем на слишком много имен собственных подряд (часто помехи)
-  const capitalWords = text.split(/\s+/).filter(w => /^[А-Я]/.test(w));
-  if (capitalWords.length > 3 && capitalWords.length > text.split(/\s+/).length * 0.5) {
-    return false;
-  }
-  
-  // Проверяем на повторения (если последние 2 сообщения были одинаковыми)
-  const lastMessages = context.messageHistory.slice(-2);
-  if (lastMessages.length >= 2 && 
-      lastMessages[0].content.toLowerCase() === lowerText &&
-      lastMessages[1].content.toLowerCase() === lowerText) {
-    return false;
-  }
-  
-  // Обычно валидные фразы содержат глаголы, числа или известные ключевые слова
-  const validKeywords = /(сколько|какой|где|есть|ищу|хочу|покажи|дай|бюджет|цена|район|квартира|мне|можно|нужно|спасибо|\\d+)/i;
-  return validKeywords.test(text);
-}
-
 // Раздача временных файлов (PDF)
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -121,19 +91,8 @@ app.post('/api/chat/voice', upload.single('audio'), async (req, res) => {
     }
 
     // 1. STT - распознаем речь
-    const sttResult = await transcribeAudio(req.file.buffer, `${sessionId}.webm`);
-    let userText = sttResult.text || '';
+    const userText = await transcribeAudio(req.file.buffer, `${sessionId}.webm`);
     console.log(`[STT] User said: ${userText}`);
-
-    // Валидируем текст: если это странные имена или повторяющиеся слова, ето режимы
-    if (!isValidUserInput(userText, context)) {
-      return res.json({
-        userText,
-        response: 'Простите, я не расслышал. Повторите, пожалуйста.',
-        audio: (await synthesizeSpeech(localizeForVoice('Простите, я не расслышал. Повторите, пожалуйста.'))).toString('base64'),
-        action: 'none',
-      });
-    }
 
     // 2. Добавляем сообщение в историю
     context.messageHistory.push({ role: 'user', content: userText });
@@ -214,28 +173,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     }
 
     // 1. STT
-    const sttResult = await transcribeAudio(req.file.buffer, `${sessionId}.webm`);
-    let userText = sttResult.text || '';
+    const userText = await transcribeAudio(req.file.buffer, `${sessionId}.webm`);
     console.log(`[STT STREAM] User said: ${userText}`);
-
-    // Валидируем текст: если это странные имена или повторяющиеся слова, ето режимы
-    if (!isValidUserInput(userText, context)) {
-      const errorText = 'Простите, я не расслышал. Повторите, пожалуйста.';
-      res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      });
-      res.flushHeaders?.();
-      const sendEvent = (event: string, data: string) => {
-        res.write(`event: ${event}\ndata: ${data}\n\n`);
-      };
-      const cleanText = errorText.replace(/[.!?…]+([.!?…])/g, '$1').replace(/\s{2,}/g, ' ').trim();
-      const audioBuf = await synthesizeSpeech(localizeForVoice(cleanText));
-      sendEvent('audio', audioBuf.toString('base64'));
-      sendEvent('done', JSON.stringify({ response: errorText, action: 'none', params: context.params }));
-      return res.end();
-    }
 
     context.messageHistory.push({ role: 'user', content: userText });
 

@@ -13,7 +13,7 @@ function getOpenAI(): OpenAI {
   return openaiClient;
 }
 
-export async function transcribeAudio(audioBuffer: Buffer, filename: string): Promise<{ text: string; confidence?: number }> {
+export async function transcribeAudio(audioBuffer: Buffer, filename: string): Promise<string> {
   // Сохраняем временный файл
   const tempDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tempDir)) {
@@ -28,17 +28,10 @@ export async function transcribeAudio(audioBuffer: Buffer, filename: string): Pr
       file: fs.createReadStream(tempPath),
       model: 'whisper-1',
       language: 'ru',
-      response_format: 'json',
-      timestamp_granularities: ['segment'],
-    } as any);
+      response_format: 'text',
+    });
 
-    // Извлекаем текст из JSON ответа
-    const text = typeof transcription === 'string' ? transcription : (transcription as any).text || '';
-    
-    return {
-      text,
-      confidence: 0.5, // Whisper не предоставляет confidence, но мы можем валидировать текст
-    };
+    return transcription;
   } finally {
     // Удаляем временный файл
     if (fs.existsSync(tempPath)) {
