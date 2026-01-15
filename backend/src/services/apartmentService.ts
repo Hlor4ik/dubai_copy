@@ -20,18 +20,24 @@ export function localizeForVoice(text: string): string {
   result = result.replace(/\bCreek Harbour\b/gi, 'Крик Харбур');
   result = result.replace(/\bDIFC\b/gi, 'ДИФС');
   
+  // Преобразуем числа перед "миллион" в текст: "до 3 миллионов" -> "до трёх миллионов"
+  result = result.replace(/(\d+)\s*(миллион[а-я]*)/gi, (match, num, millionForm) => {
+    const numInt = parseInt(num);
+    const numText = convertNumberToText(numInt);
+    return `${numText} ${millionForm}`;
+  });
+  
   // Числа с единицами - более естественное произношение
   // "1.8 млн" -> "один и восемь десятых миллиона"
   result = result.replace(/(\d+)\.(\d+)\s*млн/gi, (match, int, dec) => {
-    return `${int} и ${dec} десятых миллиона`;
+    const intText = convertNumberToText(parseInt(int));
+    return `${intText} и ${dec} десятых миллиона`;
   });
   
   // "65 м²" -> "65 квадратных метров"
   result = result.replace(/(\d+)\s*м²/g, (match, num) => {
     return `${num} квадратных метров`;
   });
-  
-  // "5 этаж" -> "пятый этаж" (оставляем как есть, ElevenLabs хорошо озвучивает)
   
   // Единицы и параметры
   result = result.replace(/\bm\b/g, 'метров');
@@ -52,6 +58,23 @@ export function localizeForVoice(text: string): string {
   result = result.replace(/\bbalcony\b/gi, 'балкон');
   
   return result;
+}
+
+// Конвертирует число в текстовое числительное (helper для localizeForVoice)
+function convertNumberToText(num: number): string {
+  const units: { [key: number]: string } = {
+    0: 'ноль', 1: 'одного', 2: 'двух', 3: 'трёх', 4: 'четырёх', 5: 'пяти',
+    6: 'шести', 7: 'семи', 8: 'восьми', 9: 'девяти', 10: 'десяти',
+    11: 'одиннадцати', 12: 'двенадцати', 13: 'тринадцати', 14: 'четырнадцати', 15: 'пятнадцати',
+    16: 'шестнадцати', 17: 'семнадцати', 18: 'восемнадцати', 19: 'девятнадцати', 20: 'двадцати'
+  };
+  
+  if (units[num]) {
+    return units[num];
+  }
+  
+  // Для чисел больше 20 возвращаем как есть
+  return num.toString();
 }
 
 export function searchApartments(params: SearchParams, excludeIds: string[] = []): Apartment[] {
