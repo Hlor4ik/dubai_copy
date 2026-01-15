@@ -22,10 +22,12 @@ PARAM EXTRACTION:
 - Extract only when user clearly mentions it; otherwise leave null
 - price_* in AED; area in m²; district from list: Dubai Marina, Downtown Dubai, Palm Jumeirah, JBR, Business Bay, Dubai Hills, Creek Harbour, JVC, DIFC
 - DISTRICT RECOGNITION: Accept variations like "Пальмс/Палмс/Palms Джумейра" → Palm Jumeirah; "Марина" → Dubai Marina; "ДжиБиАр/GBR" → JBR; "Даунтаун" → Downtown Dubai
-- Do NOT overwrite a previously known parameter unless user changes it
+- CRITICAL: When user says "увеличим/изменим/поменяем бюджет до X" → EXTRACT price_max: X and trigger "search"
+- Examples: "увеличим до 3 млн" → price_max: 3000000; "изменим на 5 миллионов" → price_max: 5000000; "уменьшим до 1.5 млн" → price_max: 1500000
+- ALWAYS overwrite parameter when user explicitly changes it ("увеличим", "изменим", "поменяем", "теперь", "другой")
 
 ACTION RULES:
-- "search": if (user has ANY parameter AND wants to see: "покажи", "ищи", "давай", "начинай") OR (already 2+ params including newly mentioned district)
+- "search": if (user changes ANY parameter like "увеличим бюджет", "другой район") OR (user has 2+ params and wants to see: "покажи", "ищи", "давай")
 - "next": only when user rejects current option ("другую", "следующую", "не подходит")
 - "confirm_interest": only after an apartment was shown and user agrees ("да", "эта", "нравится", "беру", "хочу эту")
 - "none": default continue dialog
@@ -60,15 +62,6 @@ export async function processDialogue(
 
   // Check for budget/parameter change requests
   if (/(давай|поменяй|измен|уменьш|увелич|другой|изменим|поменяем).*(бюджет|цен|цену|цен|параметр)/i.test(lowerMsg) || /^(другой бюджет|изменить цену|уменьшить|увеличить).*/i.test(lowerMsg)) {
-    return {
-      response: 'Понятно, давайте подберём для вас подходящий вариант с новым бюджетом. Какая сумма вас интересует?',
-      paramsUpdate: {},
-      action: 'none',
-    };
-  }
-
-  // Check for budget/parameter change requests
-  if (/((давай|поменяй|измен|уменьш|увелич|другой|измением|поменяем).*(бюджет|цен|цену|цена|параметр))/i.test(lowerMsg) || /^(другой бюджет|изменить цену|уменьшить|увеличить).*/i.test(lowerMsg)) {
     return {
       response: 'Понятно, давайте подберём для вас подходящий вариант с новым бюджетом. Какая сумма вас интересует?',
       paramsUpdate: {},
