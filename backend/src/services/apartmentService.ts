@@ -150,7 +150,8 @@ export function formatApartmentForVoice(apt: Apartment): string {
   const floorText = getOrdinalFloor(apt.floor);
   const priceText = formatPriceForVoice(parseFloat(priceMillions));
   
-  let description = `${apt.district}, ${areaText}, ${floorText}, ${priceText}`;
+  // Более естественная структура с интонацией
+  let description = `${apt.district}. ${areaText}, ${floorText}. ${priceText}.`;
   return localizeForVoice(description);
 }
 

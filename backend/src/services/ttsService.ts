@@ -29,7 +29,7 @@ export async function synthesizeSpeech(text: string): Promise<Buffer> {
       voice_settings: {
         stability: 0.5,           // Баланс стабильности
         similarity_boost: 0.75,    // Схожесть с оригинальным голосом
-        style: 0.0,               // Убираем стилизацию для естественности
+        style: 40,                // Добавляем выразительность для естественной интонации
         use_speaker_boost: true,
       },
     }),

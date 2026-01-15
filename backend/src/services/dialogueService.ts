@@ -34,8 +34,7 @@ ACTION RULES:
 - "end": farewell
 
 RESPONSE STYLE:
-- 1-2 sentences, no repetition of user’s words
-- If parameters are enough for search → propose action "search" and confirm what will be shown
+- 1-2 sentences, no repetition of user’s words- Use natural punctuation (periods, commas) to create natural intonation and prosody for speech synthesis- If parameters are enough for search → propose action "search" and confirm what will be shown
 - If info is missing → ask for ONE useful missing thing (district or budget), but only one question
 - Be proactive: do not delay search when user is ready`;
 
@@ -274,7 +273,7 @@ export async function processDialogue(
       if (results.length > 0) {
         apartment = results[0];
         // Короткое описание квартиры
-        finalResponse = `Вот вариант: ${formatApartmentForVoice(apartment)} Нравится или показать другую?`;
+        finalResponse = `Вот вариант. ${formatApartmentForVoice(apartment)} Нравится или показать другую?`;
       } else {
         finalResponse = 'По этим параметрам больше нет вариантов. Что изменим?';
         parsed.action = 'none';
