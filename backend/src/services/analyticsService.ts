@@ -12,7 +12,6 @@ export function startSession(sessionId: string): void {
     landingGenerated: false,
   };
   sessions.set(sessionId, analytics);
-  console.log(`[ANALYTICS] Session started: ${sessionId}`);
 }
 
 export function updateSession(context: DialogueContext): void {
@@ -23,10 +22,6 @@ export function updateSession(context: DialogueContext): void {
     if (context.selectedApartment) {
       session.selectedApartment = context.selectedApartment;
     }
-    console.log(`[ANALYTICS] Session updated: ${context.sessionId}`, {
-      params: session.params,
-      apartmentsShown: session.apartmentsShown,
-    });
   }
 }
 
@@ -35,7 +30,7 @@ export function markLandingGenerated(sessionId: string, apartmentId: string): vo
   if (session) {
     session.landingGenerated = true;
     session.selectedApartment = apartmentId;
-    console.log(`[ANALYTICS] Landing generated: ${sessionId} -> ${apartmentId}`);
+
   }
 }
 
@@ -44,10 +39,6 @@ export function endSession(sessionId: string): SessionAnalytics | undefined {
   if (session) {
     session.endTime = Date.now();
     session.duration = session.endTime - session.startTime;
-    
-    console.log(`[ANALYTICS] Session ended: ${sessionId}`);
-    console.log(`[ANALYTICS] Final report:`, JSON.stringify(session, null, 2));
-    
     return session;
   }
   return undefined;

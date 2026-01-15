@@ -174,7 +174,6 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
 
     // 1. STT
     const userText = await transcribeAudio(req.file.buffer, `${sessionId}.webm`);
-    console.log(`[STT STREAM] User said: ${userText}`);
 
     context.messageHistory.push({ role: 'user', content: userText });
 
@@ -211,9 +210,8 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
         const audioBuf = await synthesizeSpeech(cleanText);
         const b64 = audioBuf.toString('base64');
         sendEvent('audio', b64);
-        console.log(`[STREAM TTS] Synthesized: "${cleanText.substring(0, 50)}..."`);
       } catch (e) {
-        console.error('[STREAM TTS] synth failed', e);
+        console.error('[STREAM TTS] Error:', e);
         sendEvent('error', JSON.stringify({ message: 'tts_error' }));
       }
     };
@@ -229,7 +227,6 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     
     // Check for "да", "да покажи", "хочу эту", etc. when apartment was just shown
     if (lastShownId && (/^да(\s|$)|^(ну )?да[,!\.]?\s*(покажи|покаж|эту|её)?$|^покажи\s+(мне|её|эту)|^хочу\s+эту|^беру|^подходит|^нравится|^отлично|^хорошо$/i.test(lowerText))) {
-      console.log('[STREAM] Local confirm_interest detected:', userText);
       const apartment = getApartmentById(lastShownId);
       if (apartment) {
         const textToSpeak = 'Отлично! Я создаю для вас персональную страницу с подробной информацией. Ссылка появится на экране.';
@@ -271,7 +268,6 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
 
     // If stream failed, fall back to processDialogue
     if (error) {
-      console.log('[STREAM] Falling back to non-streaming response');
       const result = await processDialogue(userText, context);
       
       Object.entries(result.paramsUpdate).forEach(([key, value]) => {
@@ -310,24 +306,19 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     }
 
     // Parse finalResponse JSON and apply dialogue logic
-    console.log(`[STREAM] Raw finalResponse: "${finalResponse?.substring(0, 200) || ''}..."`);
     let parsed: any = undefined;
     try {
       parsed = JSON.parse(finalResponse || '');
     } catch {
-      console.log(`[STREAM] Failed to parse JSON directly, trying regex match...`);
       const jsonMatch = (finalResponse || '').match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        console.log(`[STREAM] Found JSON match: "${jsonMatch[0].substring(0, 150)}..."`);
         try {
           parsed = JSON.parse(jsonMatch[0]);
         } catch {
-          console.log(`[STREAM] Failed to parse JSON match`);
           parsed = undefined;
         }
       }
     }
-    console.log(`[STREAM] Parsed result:`, parsed);
 
     let textToSpeak = '';
     let action = 'none';
@@ -338,28 +329,18 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
       action = parsed.action || 'none';
       const paramsUpdate = parsed.params_update || {};
 
-      console.log(`[STREAM] Parsed action: ${action}`);
-      console.log(`[STREAM] Params update from LLM:`, JSON.stringify(paramsUpdate));
-      console.log(`[STREAM] Context params before update:`, JSON.stringify(context.params));
-
-      // Apply params update
+      // Apply params update silently
       Object.entries(paramsUpdate).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           (context.params as Record<string, unknown>)[key] = value;
         }
       });
 
-      console.log(`[STREAM] Context params after update:`, JSON.stringify(context.params));
-
       // Handle actions
       if (action === 'confirm_interest') {
-        console.log(`[STREAM] CONFIRM_INTEREST detected`);
-        console.log(`[STREAM] Shown apartments:`, context.shownApartments);
         const lastShownApartmentId = context.shownApartments[context.shownApartments.length - 1];
-        console.log(`[STREAM] Last shown apartment ID:`, lastShownApartmentId);
         if (lastShownApartmentId) {
           apartment = getApartmentById(lastShownApartmentId);
-          console.log(`[STREAM] Got apartment by ID:`, apartment?.id, apartment?.district);
         } else {
           const results = searchApartments(context.params, context.shownApartments);
           if (results.length > 0) {
@@ -371,26 +352,16 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
         }
 
         if (apartment && !textToSpeak) {
-          console.log(`[STREAM] Generating landing for apartment:`, apartment.id);
           textToSpeak = 'Отлично! Я создаю для вас персональную страницу с подробной информацией. Ссылка появится на экране.';
-          const landingId = apartment.id; // Use apartment ID directly
-          console.log(`[STREAM] Landing ID (apartment.id):`, landingId);
-          console.log(`[STREAM] Landing stored, landingUrl:`, `/apartment/${landingId}`);
+          const landingId = apartment.id;
           context.selectedApartment = apartment.id;
           markLandingGenerated(sessionId, apartment.id);
           landingUrl = `/apartment/${landingId}`;
-          console.log(`[STREAM] Landing URL ready for SSE:`, landingUrl);
-        } else {
-          console.log(`[STREAM] confirm_interest but apartment is null or textToSpeak already set`);
         }
       } else if (action === 'search' || action === 'next') {
-        console.log(`[STREAM] Searching with params:`, JSON.stringify(context.params));
-        console.log(`[STREAM] Already shown apartments:`, context.shownApartments);
         const results = searchApartments(context.params, context.shownApartments);
-        console.log(`[STREAM] Search returned ${results.length} apartments`);
         if (results.length > 0) {
           apartment = results[0];
-          console.log(`[STREAM] Selected apartment:`, apartment.id, apartment.district);
           if (!context.shownApartments.includes(apartment.id)) {
             context.shownApartments.push(apartment.id);
           }
@@ -407,7 +378,6 @@ app.post('/api/chat/voice-stream', upload.single('audio'), async (req, res) => {
     }
 
     // Synthesize entire response at once for faster playback (no fragmentation delays)
-    console.log(`[STREAM] Final text to speak: "${textToSpeak.substring(0, 100)}..."`);
     await synthesizeAndEmit(textToSpeak);
 
     // Update context
